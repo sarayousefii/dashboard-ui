@@ -11,6 +11,10 @@ import { useDashboardStats } from "../hooks/use-dashboard-stats";
 
 import { StatsCard } from "./stats-card";
 
+import { ChartCard } from "./chart-card";
+import { ProductsChart } from "./charts/products-chart";
+import { UserStatusChart } from "./charts/user-status-chart";
+
 import {
   Package,
   Users,
@@ -56,6 +60,23 @@ export function DashboardPageView() {
             Welcome back! Here is an overview of your
             system.
           </p>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ChartCard title="Monthly Products">
+            <ProductsChart
+              data={data?.monthlyProducts ?? []}
+            />
+          </ChartCard>
+
+          <ChartCard title="Users Status">
+            <UserStatusChart
+              data={
+                data?.userStatusDistribution ??
+                []
+              }
+            />
+          </ChartCard>
         </div>
 
         <div
