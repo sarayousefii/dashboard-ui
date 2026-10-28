@@ -2,6 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createProduct } from "../api/products.mutations";
 import { productsKeys } from "../api/products.query-keys";
+import type {
+  GetProductsParams,
+  Product,
+  ProductListData,
+} from "../types/product.types";
+import type { ApiResponse } from "@/shared/types/api-response";
 
 import { appToast } from "@/shared/lib/toast";
 import { getErrorMessage } from "@/shared/lib/api-error";
@@ -10,59 +16,60 @@ export function useCreateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // API call
     mutationFn: createProduct,
 
-    // 🔥 Optimistic Create
     onMutate: async (newProduct) => {
       await queryClient.cancelQueries({
-        queryKey: productsKeys.all,
+        queryKey: productsKeys.lists(),
       });
 
-      const previousList = queryClient.getQueryData(
-        productsKeys.list({} as any)
-      );
+      const previousLists = queryClient.getQueriesData<ApiResponse<ProductListData>>({
+        queryKey: productsKeys.lists(),
+      });
 
-      // 🔥 ساخت آیتم موقت (temp id)
-      const tempProduct = {
-        id: Date.now(), // موقت
-        ...newProduct,
+      const tempProduct: Product = {
+        id: -Date.now(),
+        title: newProduct.title,
+        description: newProduct.description,
+        price: newProduct.price,
       };
 
-      // اضافه کردن فوری به UI
-      queryClient.setQueryData(
-        productsKeys.list({} as any),
-        (old: any) => {
-          if (!old?.products) return old;
+      for (const [queryKey, previousResponse] of previousLists) {
+        const params = queryKey[2] as GetProductsParams | undefined;
+        const listData = previousResponse?.data;
+        const isFirstPage = (params?.page ?? 1) === 1;
+        const isUnfiltered = !params?.search && !params?.sortBy && !params?.order;
 
-          return {
-            ...old,
-            products: [
-              tempProduct,
-              ...old.products,
-            ],
-          };
-        }
-      );
+        // Only insert optimistically into the unfiltered first page.
+        // Other list variants are reconciled with the server after mutation.
+        if (!previousResponse || !listData || !isFirstPage || !isUnfiltered) continue;
 
-      return { previousList, tempProduct };
-    },
-
-    // ❌ اگر خطا شد → rollback
-    onError: (error, _newProduct, context) => {
-      if (context?.previousList) {
-        queryClient.setQueryData(
-          productsKeys.list({} as any),
-          context.previousList
-        );
+        queryClient.setQueryData<ApiResponse<ProductListData>>(queryKey, {
+          ...previousResponse,
+          data: {
+            ...listData,
+            products: [tempProduct, ...listData.products],
+            total: listData.total + 1,
+          },
+        });
       }
 
-      appToast.error(
-        getErrorMessage(error) || "Create failed"
-      );
+      return { previousLists };
     },
 
-    // 🔄 بعد از success → sync نهایی
+    onError: (error, _newProduct, context) => {
+      for (const [queryKey, previousResponse] of context?.previousLists ?? []) {
+        if (previousResponse) {
+          queryClient.setQueryData<ApiResponse<ProductListData>>(
+            queryKey,
+            previousResponse,
+          );
+        }
+      }
+
+      appToast.error(getErrorMessage(error) || "Create failed");
+    },
+
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: productsKeys.all,

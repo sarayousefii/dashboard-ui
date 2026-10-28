@@ -1,11 +1,17 @@
 import { api } from "@/shared/lib/axios";
-import { GetProductsParams } from "../types/product.types";
-import { ApiResponse } from "@/shared/types/api-response";
+import type { ApiResponse } from "@/shared/types/api-response";
 
-export async function getProducts(params: GetProductsParams) {
+import type {
+  GetProductsParams,
+  Product,
+  ProductListData,
+} from "../types/product.types";
+
+export async function getProducts(
+  params: GetProductsParams,
+): Promise<ApiResponse<ProductListData>> {
   const page = params.page ?? 1;
   const limit = params.limit ?? 10;
-
   const skip = (page - 1) * limit;
 
   const searchParams = new URLSearchParams({
@@ -17,13 +23,16 @@ export async function getProducts(params: GetProductsParams) {
   if (params.sortBy) searchParams.set("sortBy", params.sortBy);
   if (params.order) searchParams.set("order", params.order);
 
-  const res = await api.get(`/products?${searchParams.toString()}`);
+  const response = await api.get<ApiResponse<ProductListData>>(
+    `/products?${searchParams.toString()}`,
+  );
 
-  return res.data;
+  return response.data;
 }
 
-
-export async function getProductById(id: number) {
-  const res  = await api.get(`/products/${id}`);
-  return res.data;
+export async function getProductById(
+  id: number,
+): Promise<ApiResponse<Product>> {
+  const response = await api.get<ApiResponse<Product>>(`/products/${id}`);
+  return response.data;
 }

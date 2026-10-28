@@ -1,45 +1,33 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export function useUrlState() {
-  const searchParams =
-    useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const router =
-    useRouter();
+  const get = (key: string, fallback = "") =>
+    searchParams.get(key) ?? fallback;
 
-  const pathname =
-    usePathname();
+  const setMany = (values: Record<string, string>) => {
+    const params = new URLSearchParams(searchParams.toString());
 
-  const get = (
-    key: string,
-    fallback = ""
-  ) =>
-    searchParams.get(key) ??
-    fallback;
-
-  const set = (
-    key: string,
-    value: string
-  ) => {
-    const params =
-      new URLSearchParams(
-        searchParams.toString()
-      );
-
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
+    for (const [key, value] of Object.entries(values)) {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
     }
 
-    router.replace(
-      `${pathname}?${params.toString()}`,
-      { scroll: false }
-    );
+    const queryString = params.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
   };
 
-  return {
-    get,
-    set,
+  const set = (key: string, value: string) => {
+    setMany({ [key]: value });
   };
+
+  return { get, set, setMany };
 }

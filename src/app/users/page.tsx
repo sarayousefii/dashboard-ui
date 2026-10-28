@@ -1,17 +1,12 @@
-import {
-  HydrationBoundary,
-  dehydrate,
-} from "@tanstack/react-query";
+import type { Metadata } from "next";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
+import { PermissionGuard } from "@/features/auth/components/permission-guard";
+import { usersListQuery } from "@/features/users/api/users.query-options";
+import UsersPageView from "@/features/users/components/users-page-view";
 import { getQueryClient } from "@/shared/lib/react-query";
 
-import { usersListQuery } from "@/features/users/api/users.query-options";
-
-import UsersPageView from "@/features/users/components/users-page-view";
-import { PermissionGuard } from "@/features/auth/components/permission-guard";
-import type { Metadata } from "next";
-
-export const metadata = {
+export const metadata: Metadata = {
   title: "Users",
   description: "Manage users",
 };
@@ -29,7 +24,6 @@ export default async function UsersPage({
   searchParams,
 }: Props) {
   const params = await searchParams;
-
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery(
@@ -38,18 +32,14 @@ export default async function UsersPage({
       search: params.search || "",
       sortBy: params.sortBy || "",
       order: params.order || "",
-    })
+    }),
   );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-
-      <PermissionGuard permission="users.view" >
-
+      <PermissionGuard permission="users.view">
         <UsersPageView />
-
       </PermissionGuard>
-      
     </HydrationBoundary>
   );
 }

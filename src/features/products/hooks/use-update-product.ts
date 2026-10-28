@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { updateProduct } from "../api/products.mutations";
+import type { UpdateProductVariables } from "../api/products.mutations";
 import { productsKeys } from "../api/products.query-keys";
+import type { Product, ProductListData } from "../types/product.types";
+import type { ApiResponse } from "@/shared/types/api-response";
 
 import { appToast } from "@/shared/lib/toast";
 import { getErrorMessage } from "@/shared/lib/api-error";
@@ -10,93 +13,74 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // API call برای آپدیت محصول
     mutationFn: updateProduct,
 
-    // قبل از ارسال request → Optimistic Update
-    onMutate: async ({ id, data }) => {
-      await queryClient.cancelQueries({
-        queryKey: productsKeys.all,
+    onMutate: async ({ id, data }: UpdateProductVariables) => {
+      await queryClient.cancelQueries({ queryKey: productsKeys.all });
+
+      const previousLists = queryClient.getQueriesData<ApiResponse<ProductListData>>({
+        queryKey: productsKeys.lists(),
       });
 
-      // snapshot از لیست برای rollback
-      const previousList = queryClient.getQueryData(
-        productsKeys.list({} as any)
-      );
+      const detailKey = productsKeys.detail(id);
+      const previousDetail = queryClient.getQueryData<ApiResponse<Product>>(detailKey);
+      const detailWasCached = queryClient.getQueryState(detailKey) !== undefined;
 
-      // snapshot از detail page
-      const previousDetail = queryClient.getQueryData(
-        productsKeys.detail(id)
-      );
-
-      // 🔥 1. آپدیت لیست محصولات
-      queryClient.setQueryData(
-        productsKeys.list({} as any),
-        (old: any) => {
-          if (!old?.products) return old;
+      queryClient.setQueriesData<ApiResponse<ProductListData>>(
+        { queryKey: productsKeys.lists() },
+        (previousResponse) => {
+          if (!previousResponse?.data?.products) return previousResponse;
 
           return {
-            ...old,
-            products: old.products.map((p: any) =>
-              p.id === id
-                ? { ...p, ...data }
-                : p
-            ),
+            ...previousResponse,
+            data: {
+              ...previousResponse.data,
+              products: previousResponse.data.products.map((product) =>
+                product.id === id ? { ...product, ...data } : product,
+              ),
+            },
           };
-        }
+        },
       );
 
-      // 🔥 2. آپدیت صفحه جزئیات
-      queryClient.setQueryData(
-        productsKeys.detail(id),
-        (old: any) => {
-          if (!old) return old;
+      queryClient.setQueryData<ApiResponse<Product>>(detailKey, (previousResponse) => {
+        if (!previousResponse?.data) return previousResponse;
 
-          return {
-            ...old,
-            ...data,
-          };
-        }
-      );
+        return {
+          ...previousResponse,
+          data: { ...previousResponse.data, ...data },
+        };
+      });
 
-      return {
-        previousList,
-        previousDetail,
-      };
+      return { previousLists, previousDetail, detailWasCached };
     },
 
-    // اگر خطا رخ داد → rollback کامل
     onError: (error, variables, context) => {
-      if (context?.previousList) {
-        queryClient.setQueryData(
-          productsKeys.list({} as any),
-          context.previousList
-        );
+      for (const [queryKey, previousResponse] of context?.previousLists ?? []) {
+        if (previousResponse) {
+          queryClient.setQueryData<ApiResponse<ProductListData>>(
+            queryKey,
+            previousResponse,
+          );
+        }
       }
 
-      if (context?.previousDetail) {
-        queryClient.setQueryData(
-          productsKeys.detail(variables.id),
-          context.previousDetail
+      const detailKey = productsKeys.detail(variables.id);
+      if (context?.detailWasCached) {
+        queryClient.setQueryData<ApiResponse<Product>>(
+          detailKey,
+          context.previousDetail,
         );
+      } else {
+        queryClient.removeQueries({ queryKey: detailKey, exact: true });
       }
 
-      appToast.error(
-        getErrorMessage(error) || "Update failed"
-      );
+      appToast.error(getErrorMessage(error) || "Update failed");
     },
 
-    // بعد از success یا error → sync با server
     onSettled: (_data, _error, variables) => {
-      // invalidate لیست
-      queryClient.invalidateQueries({
-        queryKey: productsKeys.all,
-      });
-
-      // invalidate دیتیل
-      queryClient.invalidateQueries({
-        queryKey: productsKeys.detail(variables.id),
-      });
+      queryClient.invalidateQueries({ queryKey: productsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: productsKeys.detail(variables.id) });
     },
   });
 }
