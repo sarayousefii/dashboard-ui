@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
+
 import { Providers } from "@/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthGuard } from "@/features/auth/components/auth-guard";
@@ -20,10 +22,8 @@ export const metadata: Metadata = {
     default: "Dashboard",
     template: "%s | Dashboard",
   },
-
   description:
     "Modern Admin Dashboard built with Next.js, TypeScript, React Query, Zustand and RBAC.",
-
   keywords: [
     "Next.js",
     "React",
@@ -33,12 +33,7 @@ export const metadata: Metadata = {
     "React Query",
     "RBAC",
   ],
-
-  authors: [
-    {
-      name: "Sara Yousefi",
-    },
-  ],
+  authors: [{ name: "Sara Yousefi" }],
 };
 
 export default function RootLayout({
@@ -48,15 +43,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-
-          <AuthGuard>
-            {children}
-          </AuthGuard>
-
+          <AuthGuard>{children}</AuthGuard>
           <Toaster />
-          
         </Providers>
       </body>
     </html>

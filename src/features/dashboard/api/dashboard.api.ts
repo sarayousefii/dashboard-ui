@@ -1,34 +1,34 @@
 import { api } from "@/shared/lib/axios";
+import type { ApiResponse } from "@/shared/types/api-response";
 
-import { DashboardStats } from "../types/dashboard.types";
+import type { ProductListData } from "@/features/products/types/product.types";
+import type { UserListData } from "@/features/users/types/user.types";
+import type { DashboardStats } from "../types/dashboard.types";
+
+type ProductCollectionPayload = ApiResponse<ProductListData> | ProductListData;
+type UserCollectionPayload = ApiResponse<UserListData> | UserListData;
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const [productsRes, usersRes] = await Promise.all([
-    api.get("/products"),
-    api.get("/users"),
+  const [productsResponse, usersResponse] = await Promise.all([
+    api.get<ProductCollectionPayload>("/products"),
+    api.get<UserCollectionPayload>("/users"),
   ]);
 
-  const products =
-    productsRes.data?.products ??
-    productsRes.data?.data?.products ??
-    [];
+  const productsPayload = productsResponse.data;
+  const usersPayload = usersResponse.data;
 
-  const users =
-    usersRes.data?.users ??
-    usersRes.data?.data?.users ??
-    [];
+  const products = "data" in productsPayload
+    ? productsPayload.data.products
+    : productsPayload.products;
+
+  const users = "data" in usersPayload
+    ? usersPayload.data.users
+    : usersPayload.users;
 
   return {
     totalProducts: products.length,
-
     totalUsers: users.length,
-
-    activeUsers: users.filter(
-      (user: any) => user.status === "active"
-    ).length,
-
-    pendingUsers: users.filter(
-      (user: any) => user.status === "pending"
-    ).length,
+    activeUsers: users.filter((user) => user.status === "active").length,
+    pendingUsers: users.filter((user) => user.status === "pending").length,
   };
 }

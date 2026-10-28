@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { deleteProduct } from "../api/products.mutations";
 import { productsKeys } from "../api/products.query-keys";
+import type { ProductListData } from "../types/product.types";
+import type { ApiResponse } from "@/shared/types/api-response";
 
 import { appToast } from "@/shared/lib/toast";
 import { getErrorMessage } from "@/shared/lib/api-error";
@@ -10,62 +12,59 @@ export function useDeleteProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // API call برای حذف محصول
     mutationFn: deleteProduct,
 
-    // قبل از ارسال request → Optimistic Update
     onMutate: async (id: number) => {
-      // جلوگیری از refetch همزمان
       await queryClient.cancelQueries({
-        queryKey: productsKeys.all,
+        queryKey: productsKeys.lists(),
       });
 
-      // گرفتن snapshot از cache برای rollback
-      const previousData = queryClient.getQueryData(
-        productsKeys.list({} as any)
-      );
+      const previousLists = queryClient.getQueriesData<ApiResponse<ProductListData>>({
+        queryKey: productsKeys.lists(),
+      });
 
-      // حذف فوری از UI (Optimistic Update)
-      queryClient.setQueryData(
-        productsKeys.list({} as any),
-        (old: any) => {
-          if (!old?.products) return old;
+      queryClient.setQueriesData<ApiResponse<ProductListData>>(
+        { queryKey: productsKeys.lists() },
+        (previousResponse) => {
+          if (!previousResponse?.data?.products) return previousResponse;
+
+          const beforeCount = previousResponse.data.products.length;
+          const products = previousResponse.data.products.filter(
+            (product) => product.id !== id,
+          );
+
+          if (products.length === beforeCount) return previousResponse;
 
           return {
-            ...old,
-            products: old.products.filter(
-              (p: any) => p.id !== id
-            ),
+            ...previousResponse,
+            data: {
+              ...previousResponse.data,
+              products,
+              total: Math.max(0, previousResponse.data.total - 1),
+            },
           };
-        }
+        },
       );
 
-      return { previousData };
+      return { previousLists };
     },
 
-    // اگر خطا رخ دهد → rollback UI
     onError: (error, _id, context) => {
-      // بازگرداندن state قبلی
-      if (context?.previousData) {
-        queryClient.setQueryData(
-          productsKeys.list({} as any),
-          context.previousData
-        );
+      for (const [queryKey, previousResponse] of context?.previousLists ?? []) {
+        if (previousResponse) {
+          queryClient.setQueryData<ApiResponse<ProductListData>>(
+            queryKey,
+            previousResponse,
+          );
+        }
       }
 
-      appToast.error(
-        getErrorMessage(error) || "Delete failed"
-      );
+      appToast.error(getErrorMessage(error) || "Delete failed");
     },
 
-    // بعد از success یا error → sync با server
-    onSettled: () => {
-      // invalidateQueries:
-      // یعنی داده را دوباره از سرور fetch کن
-      // برای sync کردن cache با backend
-      queryClient.invalidateQueries({
-        queryKey: productsKeys.all,
-      });
+    onSettled: (_data, _error, id) => {
+      queryClient.invalidateQueries({ queryKey: productsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: productsKeys.detail(id) });
     },
   });
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
 import { useCurrentUser } from "../hooks/use-current-user";
 
 export function AuthGuard({
@@ -11,22 +12,21 @@ export function AuthGuard({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-
   const { data, isLoading } = useCurrentUser();
-
   const isAuthPage = pathname === "/login";
 
   useEffect(() => {
     if (isLoading) return;
 
     if (!data?.user && !isAuthPage) {
-        router.replace("/login");
+      router.replace("/login");
+      return;
     }
 
     if (data?.user && isAuthPage) {
-        router.replace("/products");
+      router.replace("/products");
     }
-    }, [data, isLoading]);
+  }, [data?.user, isAuthPage, isLoading, router]);
 
   if (isLoading) {
     return <div>Loading...</div>;

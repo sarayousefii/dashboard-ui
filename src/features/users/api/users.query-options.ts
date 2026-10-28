@@ -1,8 +1,10 @@
-import { queryOptions, keepPreviousData } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions } from "@tanstack/react-query";
+
 import { getUsers, getUserById } from "./users.api";
 import { usersKeys } from "./users.query-keys";
+import type { GetUsersParams } from "../types/user.types";
 
-export function usersListQuery(params: any) {
+export function usersListQuery(params: GetUsersParams) {
   return queryOptions({
     queryKey: usersKeys.list(params),
     queryFn: () => getUsers(params),

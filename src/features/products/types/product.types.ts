@@ -1,8 +1,16 @@
 export interface Product {
   id: number;
   title: string;
-  category: string;
+  description?: string;
+  category?: string;
   price: number;
+}
+
+export interface ProductListData {
+  products: Product[];
+  total: number;
+  skip: number;
+  limit: number;
 }
 
 export interface GetProductsParams {

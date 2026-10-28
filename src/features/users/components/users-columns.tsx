@@ -1,5 +1,6 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { User } from "../types/user.types";
+import type { ColumnDef } from "@tanstack/react-table";
+
+import type { User } from "../types/user.types";
 import { UserActions } from "./user-actions";
 
 export const userColumns: ColumnDef<User>[] = [
@@ -21,42 +22,17 @@ export const userColumns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "role",
-
     header: "Role",
-
-    cell: ({ row }) => {
-      return (
-        <span>
-          {row.original.role ??
-            "viewer"}
-        </span>
-      );
-    },
+    cell: ({ row }) => <span>{row.original.role ?? "viewer"}</span>,
   },
   {
     accessorKey: "status",
     header: "Status",
-
-    cell: ({ row }) => {
-      const status =
-        row.original.status ?? "active";
-
-      return (
-        <span>
-          {status}
-        </span>
-      );
-    },
+    cell: ({ row }) => <span>{row.original.status ?? "active"}</span>,
   },
   {
     id: "actions",
     header: "",
-    cell: ({ row }) => {
-      const user = row.original; // ✅ fully typed now
-
-      return (
-        <UserActions user={row.original} />
-      );
-    },
+    cell: ({ row }) => <UserActions user={row.original} />,
   },
 ];
