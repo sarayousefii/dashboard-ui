@@ -9,26 +9,7 @@ type ProductCollectionPayload = ApiResponse<ProductListData> | ProductListData;
 type UserCollectionPayload = ApiResponse<UserListData> | UserListData;
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const [productsResponse, usersResponse] = await Promise.all([
-    api.get<ProductCollectionPayload>("/products"),
-    api.get<UserCollectionPayload>("/users"),
-  ]);
+  const { data } = await api.get<DashboardStats>("/dashboard");
 
-  const productsPayload = productsResponse.data;
-  const usersPayload = usersResponse.data;
-
-  const products = "data" in productsPayload
-    ? productsPayload.data.products
-    : productsPayload.products;
-
-  const users = "data" in usersPayload
-    ? usersPayload.data.users
-    : usersPayload.users;
-
-  return {
-    totalProducts: products.length,
-    totalUsers: users.length,
-    activeUsers: users.filter((user) => user.status === "active").length,
-    pendingUsers: users.filter((user) => user.status === "pending").length,
-  };
+  return data;
 }
