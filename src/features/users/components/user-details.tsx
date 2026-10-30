@@ -1,9 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 
 import { Card } from "@/components/ui/card";
-
 import { DashboardLayout } from "@/shared/components/layout/dashboard-layout";
 
 import { useUserQuery } from "../hooks/use-user-query";
@@ -11,51 +11,55 @@ import { useUserQuery } from "../hooks/use-user-query";
 export default function UserDetails() {
   const { id } = useParams();
 
-  const { data } =
-    useUserQuery(Number(id));
+  const t = useTranslations("users");
+
+  const { data } = useUserQuery(Number(id));
 
   const user = data?.data;
 
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
   return (
     <DashboardLayout>
       <div className="max-w-3xl space-y-6">
         <div>
           <h1 className="text-3xl font-bold">
-            {user.firstName}{" "}
-            {user.lastName}
+            {user.firstName} {user.lastName}
           </h1>
 
           <p className="text-muted-foreground">
-            User Details
+            {t("details")}
           </p>
         </div>
 
         <Card className="p-6">
           <div className="space-y-4">
             <div>
-              <p className="text-muted-foreground text-sm">
-                Email
+              <p className="text-sm text-muted-foreground">
+                {t("form.email")}
               </p>
 
               <p>{user.email}</p>
             </div>
 
             <div>
-              <p className="text-muted-foreground text-sm">
-                Age
+              <p className="text-sm text-muted-foreground">
+                {t("form.age")}
               </p>
 
               <p>{user.age}</p>
             </div>
 
             <div>
-              <p className="text-muted-foreground text-sm">
-                Role
+              <p className="text-sm text-muted-foreground">
+                {t("table.role")}
               </p>
 
-              <p>{user.role}</p>
+              <p>
+                {t(`roles.${user.role}`)}
+              </p>
             </div>
           </div>
         </Card>

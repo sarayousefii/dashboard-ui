@@ -2,15 +2,13 @@ interface Props {
   message?: string;
 }
 
-export function FormError({
-  message,
-}: Props) {
+export function FormError({ message }: Props) {
   if (!message) {
     return null;
   }
 
   return (
-    <p className="text-sm text-red-500 mt-1">
+    <p className="mt-1 text-sm text-destructive">
       {message}
     </p>
   );

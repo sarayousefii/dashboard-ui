@@ -1,16 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import {
+  Eye,
   MoreHorizontal,
-  Trash2,
+  Pencil,
   Power,
   Shield,
+  Trash2,
   UserCog,
-  Eye,
-  Pencil,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ import { useDeleteUser } from "../hooks/use-delete-user";
 import { useToggleUserStatus } from "../hooks/use-toggle-user-status";
 import { useUpdateUserRole } from "../hooks/use-update-user-role";
 
-import { User, UserRole } from "../types/user.types";
+import type { User, UserRole } from "../types/user.types";
 
 import { usePermission } from "@/features/auth/hooks/use-permission";
 
@@ -37,24 +38,18 @@ interface Props {
   user: User;
 }
 
-export function UserActions({
-  user,
-}: Props) {
-  const [open, setOpen] =
-    useState(false);
+export function UserActions({ user }: Props) {
+  const [open, setOpen] = useState(false);
+
+  const t = useTranslations("users.actions");
 
   const {
     mutate: deleteUser,
     isPending: isDeleting,
   } = useDeleteUser();
 
-  const {
-    mutate: toggleStatus,
-  } = useToggleUserStatus();
-
-  const {
-    mutate: updateRole,
-  } = useUpdateUserRole();
+  const { mutate: toggleStatus } = useToggleUserStatus();
+  const { mutate: updateRole } = useUpdateUserRole();
 
   const {
     canDeleteUser,
@@ -62,15 +57,14 @@ export function UserActions({
     canEditUser,
   } = usePermission();
 
+  const currentStatus = user.status ?? "active";
+
   const nextStatus =
-    user.status === "active"
-      ? "inactive"
-      : "active";
+    currentStatus === "active" ? "inactive" : "active";
 
   const handleDelete = () => {
     deleteUser(user.id, {
-      onSuccess: () =>
-        setOpen(false),
+      onSuccess: () => setOpen(false),
     });
   };
 
@@ -78,41 +72,35 @@ export function UserActions({
     <>
       <div className="flex justify-center">
         <DropdownMenu>
-          <DropdownMenuTrigger
-            asChild
-          >
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
+              aria-label={t("open")}
             >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent
-            align="end"
-            className="w-48"
-          >
-            <DropdownMenuItem
-              asChild
-            >
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem asChild>
               <Link
                 href={`/users/${user.id}`}
+                className="flex items-center"
               >
-                <Eye className="mr-2 h-4 w-4" />
-                View
+                <Eye className="me-2 h-4 w-4" />
+                {t("view")}
               </Link>
             </DropdownMenuItem>
 
             {canEditUser && (
-              <DropdownMenuItem
-                asChild
-              >
+              <DropdownMenuItem asChild>
                 <Link
                   href={`/users/edit/${user.id}`}
+                  className="flex items-center"
                 >
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit
+                  <Pencil className="me-2 h-4 w-4" />
+                  {t("edit")}
                 </Link>
               </DropdownMenuItem>
             )}
@@ -129,8 +117,8 @@ export function UserActions({
                     })
                   }
                 >
-                  <Shield className="mr-2 h-4 w-4" />
-                  Make Admin
+                  <Shield className="me-2 h-4 w-4" />
+                  {t("makeAdmin")}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -141,8 +129,8 @@ export function UserActions({
                     })
                   }
                 >
-                  <UserCog className="mr-2 h-4 w-4" />
-                  Make Editor
+                  <UserCog className="me-2 h-4 w-4" />
+                  {t("makeEditor")}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -153,8 +141,8 @@ export function UserActions({
                     })
                   }
                 >
-                  <UserCog className="mr-2 h-4 w-4" />
-                  Make Viewer
+                  <UserCog className="me-2 h-4 w-4" />
+                  {t("makeViewer")}
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -170,23 +158,20 @@ export function UserActions({
                   })
                 }
               >
-                <Power className="mr-2 h-4 w-4" />
-
-                {user.status === "active"
-                  ? "Deactivate"
-                  : "Activate"}
+                <Power className="me-2 h-4 w-4" />
+                {currentStatus === "active"
+                  ? t("deactivate")
+                  : t("activate")}
               </DropdownMenuItem>
             )}
 
             {canDeleteUser && (
               <DropdownMenuItem
-                onClick={() =>
-                  setOpen(true)
-                }
-                className="text-red-600"
+                onClick={() => setOpen(true)}
+                className="text-destructive"
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                <Trash2 className="me-2 h-4 w-4" />
+                {t("delete")}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -196,9 +181,11 @@ export function UserActions({
       <ConfirmDialog
         open={open}
         onOpenChange={setOpen}
-        title="Delete User"
-        description={`Are you sure you want to delete ${user.firstName}?`}
-        confirmText="Delete"
+        title={t("deleteTitle")}
+        description={t("deleteDescription", {
+          name: user.firstName,
+        })}
+        confirmText={t("confirmDelete")}
         loading={isDeleting}
         onConfirm={handleDelete}
       />

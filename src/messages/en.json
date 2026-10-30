@@ -1,0 +1,207 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "confirmDialog": {
+      "title": "Are you sure?",
+      "description": "This action cannot be undone.",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "loading": "Loading..."
+    }
+  },
+  "brand": {
+    "adminPanel": "Admin Panel"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "users": "Users"
+  },
+  "navbar": {
+    "loading": "Loading...",
+    "hello": "Hello, {name}",
+    "welcomeBack": "Welcome back",
+    "logout": "Logout",
+    "toggleSidebar": "Toggle sidebar"
+  },
+  "language": {
+    "switchToPersian": "Switch to Persian",
+    "switchToEnglish": "Switch to English"
+  },
+  "theme": {
+    "label": "Toggle color theme",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "username": "Username",
+      "usernamePlaceholder": "Enter your username",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Login",
+      "submitting": "Logging in..."
+    }
+  },
+  "notifications": {
+    "loginSuccess": "Logged in successfully",
+    "logoutSuccess": "Logged out successfully"
+  },
+  "products": {
+    "title": "Products",
+    "create": "Create Product",
+    "details": "Product Details",
+    "table": {
+      "title": "Title",
+      "price": "Price"
+    },
+    "form": {
+      "createTitle": "Create Product",
+      "editTitle": "Edit Product",
+      "manageDescription": "Manage product information",
+      "title": "Title",
+      "description": "Description",
+      "price": "Price",
+      "create": "Create Product",
+      "update": "Update Product",
+      "saving": "Saving..."
+    },
+    "filters": {
+      "search": "Search products...",
+      "sortBy": "Sort By",
+      "title": "Title",
+      "price": "Price",
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "actions": {
+      "open": "Open product actions",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete Product",
+      "deleteDescription": "This action cannot be undone.",
+      "confirmDelete": "Delete"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page}"
+    },
+    "states": {
+      "errorTitle": "Something went wrong",
+      "empty": "No products found",
+      "retry": "Try again",
+      "notFoundTitle": "Product Not Found",
+      "notFoundDescription": "The product you are looking for does not exist.",
+      "backToProducts": "Back to Products"
+    },
+    "notifications": {
+      "created": "Product created successfully",
+      "updated": "Product updated successfully",
+      "deleted": "Product deleted successfully",
+      "createFailed": "Create failed",
+      "updateFailed": "Update failed",
+      "deleteFailed": "Delete failed"
+    },
+    "validation": {
+      "titleMin": "Title must contain at least 3 characters.",
+      "descriptionMin": "Description must contain at least 10 characters.",
+      "priceMin": "Price must be at least 1."
+    }
+  },
+  "users": {
+    "title": "Users",
+    "create": "Create User",
+    "details": "User Details",
+    "common": {
+      "loading": "Loading..."
+    },
+    "form": {
+      "createTitle": "Create User",
+      "editTitle": "Edit User",
+      "manageDescription": "Manage user information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "age": "Age",
+      "create": "Create User",
+      "update": "Update User"
+    },
+    "filters": {
+      "search": "Search users...",
+      "sortBy": "Sort By",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "age": "Age",
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "table": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "age": "Age",
+      "role": "Role",
+      "status": "Status"
+    },
+    "roles": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending"
+    },
+    "actions": {
+      "open": "Open user actions",
+      "view": "View",
+      "edit": "Edit",
+      "makeAdmin": "Make Admin",
+      "makeEditor": "Make Editor",
+      "makeViewer": "Make Viewer",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete",
+      "deleteTitle": "Delete User",
+      "deleteDescription": "Are you sure you want to delete {name}?",
+      "confirmDelete": "Delete"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page}"
+    },
+    "states": {
+      "errorTitle": "Something went wrong",
+      "empty": "No users found"
+    },
+    "validation": {
+      "firstNameMin": "First name must contain at least 2 characters.",
+      "lastNameMin": "Last name must contain at least 2 characters.",
+      "emailInvalid": "Please enter a valid email address.",
+      "ageMin": "User must be at least 18 years old."
+    },
+    "notifications": {
+      "created": "User created successfully"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Welcome back! Here is an overview of your system.",
+    "loadError": "Failed to load dashboard",
+    "charts": {
+      "monthlyProducts": "Monthly Products",
+      "userStatus": "Users Status"
+    },
+    "stats": {
+      "totalProducts": "Total Products",
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "pendingUsers": "Pending Users"
+    }
+  }
+}

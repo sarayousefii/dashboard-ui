@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import type { ApiResponse } from "@/shared/types/api-response";
 import { deleteProduct } from "../api/products.mutations";
 import { productsKeys } from "../api/products.query-keys";
 import type { ProductListData } from "../types/product.types";
-import type { ApiResponse } from "@/shared/types/api-response";
 
-import { appToast } from "@/shared/lib/toast";
 import { getErrorMessage } from "@/shared/lib/api-error";
+import { appToast } from "@/shared/lib/toast";
+import { useTranslations } from "next-intl";
 
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
-
+  const t = useTranslations("products.notifications");
   return useMutation({
     mutationFn: deleteProduct,
 
@@ -48,7 +49,9 @@ export function useDeleteProduct() {
 
       return { previousLists };
     },
-
+    onSuccess: () => {
+      appToast.success(t("deleted"));
+    },
     onError: (error, _id, context) => {
       for (const [queryKey, previousResponse] of context?.previousLists ?? []) {
         if (previousResponse) {
@@ -59,8 +62,9 @@ export function useDeleteProduct() {
         }
       }
 
-      appToast.error(getErrorMessage(error) || "Delete failed");
+      appToast.error(getErrorMessage(error) || 	t("deleteFailed"));
     },
+
 
     onSettled: (_data, _error, id) => {
       queryClient.invalidateQueries({ queryKey: productsKeys.lists() });

@@ -1,16 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { updateProduct } from "../api/products.mutations";
+import type { ApiResponse } from "@/shared/types/api-response";
 import type { UpdateProductVariables } from "../api/products.mutations";
+import { updateProduct } from "../api/products.mutations";
 import { productsKeys } from "../api/products.query-keys";
 import type { Product, ProductListData } from "../types/product.types";
-import type { ApiResponse } from "@/shared/types/api-response";
 
-import { appToast } from "@/shared/lib/toast";
 import { getErrorMessage } from "@/shared/lib/api-error";
+import { appToast } from "@/shared/lib/toast";
+import { useTranslations } from "next-intl";
 
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
+  const t = useTranslations("products.notifications");
 
   return useMutation({
     mutationFn: updateProduct,
@@ -75,7 +77,7 @@ export function useUpdateProduct() {
         queryClient.removeQueries({ queryKey: detailKey, exact: true });
       }
 
-      appToast.error(getErrorMessage(error) || "Update failed");
+      appToast.error(getErrorMessage(error) || 	t("updateFailed"));
     },
 
     onSettled: (_data, _error, variables) => {

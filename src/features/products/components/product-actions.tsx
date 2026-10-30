@@ -1,7 +1,8 @@
 "use client";
 
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/shared/components/common/confirm-dialog";
@@ -15,7 +16,12 @@ import {
 
 import { useDeleteProduct } from "../hooks/use-delete-product";
 
-import { MoreHorizontal, Eye, Pencil, Trash2 } from "lucide-react";
+import {
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 
 interface Props {
   id: number;
@@ -23,6 +29,7 @@ interface Props {
 
 export function ProductActions({ id }: Props) {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("products.actions");
 
   const { mutate: deleteProduct, isPending } =
     useDeleteProduct();
@@ -37,20 +44,23 @@ export function ProductActions({ id }: Props) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={t("open")}
+          >
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-40">
-
           <DropdownMenuItem asChild>
             <Link
               href={`/products/${id}`}
               className="flex items-center gap-2"
             >
               <Eye className="h-4 w-4" />
-              View
+              {t("view")}
             </Link>
           </DropdownMenuItem>
 
@@ -60,27 +70,26 @@ export function ProductActions({ id }: Props) {
               className="flex items-center gap-2"
             >
               <Pencil className="h-4 w-4" />
-              Edit
+              {t("edit")}
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={() => setOpen(true)}
-            className="text-red-600 flex items-center gap-2"
+            className="flex items-center gap-2 text-destructive"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {t("delete")}
           </DropdownMenuItem>
-
         </DropdownMenuContent>
       </DropdownMenu>
 
       <ConfirmDialog
         open={open}
         onOpenChange={setOpen}
-        title="Delete Product"
-        description="This action cannot be undone."
-        confirmText="Delete"
+        title={t("deleteTitle")}
+        description={t("deleteDescription")}
+        confirmText={t("confirmDelete")}
         loading={isPending}
         onConfirm={handleDelete}
       />
