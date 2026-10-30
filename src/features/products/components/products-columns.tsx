@@ -1,10 +1,13 @@
+
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { Product } from "../types/product.types";
 import { ProductActions } from "./product-actions";
 
+type ProductColumnKey = "title" | "price";
+
 export function createProductColumns(
-  t: (key: "title" | "price") => string,
+  t: (key: ProductColumnKey) => string,
 ): ColumnDef<Product>[] {
   return [
     {

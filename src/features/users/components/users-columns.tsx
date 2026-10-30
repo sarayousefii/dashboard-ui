@@ -1,3 +1,4 @@
+
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { User } from "../types/user.types";

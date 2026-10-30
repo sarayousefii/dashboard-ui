@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useTranslations } from "next-intl";
@@ -39,8 +40,7 @@ export default function ProductsPageView() {
   } = useProductsView();
 
   const columns = useMemo(
-    () =>
-      createProductColumns((key) => tableT(key)),
+    () => createProductColumns((key) => tableT(key)),
     [tableT],
   );
 
