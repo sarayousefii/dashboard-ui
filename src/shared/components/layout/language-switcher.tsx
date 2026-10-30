@@ -1,5 +1,7 @@
+
 "use client";
 
+import { GB, IR } from "country-flag-icons/react/3x2";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
@@ -14,12 +16,7 @@ export function LanguageSwitcher() {
   const t = useTranslations("language");
 
   const nextLocale = locale === "en" ? "fa" : "en";
-  const queryString = searchParams.toString();
-
-  const label =
-    locale === "en"
-      ? "فارسی"
-      : "English";
+  const Flag = locale === "en" ? IR : GB;
 
   const ariaLabel =
     locale === "en"
@@ -27,6 +24,8 @@ export function LanguageSwitcher() {
       : t("switchToEnglish");
 
   function handleLanguageChange() {
+    const queryString = searchParams.toString();
+
     const href = queryString
       ? `${pathname}?${queryString}`
       : pathname;
@@ -39,13 +38,18 @@ export function LanguageSwitcher() {
   return (
     <Button
       type="button"
-      variant="outline"
-      size="sm"
+      variant="ghost"
+      size="icon"
+      className="h-9 w-9 shrink-0 rounded-full p-0"
       onClick={handleLanguageChange}
       aria-label={ariaLabel}
       title={ariaLabel}
     >
-      {label}
+      <Flag
+        aria-hidden="true"
+        preserveAspectRatio="xMidYMid slice"
+        className="h-9 w-9 rounded-full"
+      />
     </Button>
   );
 }

@@ -1,7 +1,8 @@
+
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import {
@@ -41,6 +42,9 @@ interface Props {
 export function UserActions({ user }: Props) {
   const [open, setOpen] = useState(false);
 
+  const locale = useLocale();
+  const direction = locale === "fa" ? "rtl" : "ltr";
+
   const t = useTranslations("users.actions");
 
   const {
@@ -71,7 +75,7 @@ export function UserActions({ user }: Props) {
   return (
     <>
       <div className="flex justify-center">
-        <DropdownMenu>
+        <DropdownMenu dir={direction}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -82,14 +86,18 @@ export function UserActions({ user }: Props) {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent
+            align="end"
+            style={{ direction }}
+            className="w-48"
+          >
             <DropdownMenuItem asChild>
               <Link
                 href={`/users/${user.id}`}
-                className="flex items-center"
+                className="flex w-full items-center"
               >
-                <Eye className="me-2 h-4 w-4" />
-                {t("view")}
+                <Eye className="me-2 h-4 w-4 shrink-0" />
+                <span>{t("view")}</span>
               </Link>
             </DropdownMenuItem>
 
@@ -97,10 +105,10 @@ export function UserActions({ user }: Props) {
               <DropdownMenuItem asChild>
                 <Link
                   href={`/users/edit/${user.id}`}
-                  className="flex items-center"
+                  className="flex w-full items-center"
                 >
-                  <Pencil className="me-2 h-4 w-4" />
-                  {t("edit")}
+                  <Pencil className="me-2 h-4 w-4 shrink-0" />
+                  <span>{t("edit")}</span>
                 </Link>
               </DropdownMenuItem>
             )}
@@ -117,8 +125,8 @@ export function UserActions({ user }: Props) {
                     })
                   }
                 >
-                  <Shield className="me-2 h-4 w-4" />
-                  {t("makeAdmin")}
+                  <Shield className="me-2 h-4 w-4 shrink-0" />
+                  <span>{t("makeAdmin")}</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -129,8 +137,8 @@ export function UserActions({ user }: Props) {
                     })
                   }
                 >
-                  <UserCog className="me-2 h-4 w-4" />
-                  {t("makeEditor")}
+                  <UserCog className="me-2 h-4 w-4 shrink-0" />
+                  <span>{t("makeEditor")}</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -141,8 +149,8 @@ export function UserActions({ user }: Props) {
                     })
                   }
                 >
-                  <UserCog className="me-2 h-4 w-4" />
-                  {t("makeViewer")}
+                  <UserCog className="me-2 h-4 w-4 shrink-0" />
+                  <span>{t("makeViewer")}</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -158,10 +166,12 @@ export function UserActions({ user }: Props) {
                   })
                 }
               >
-                <Power className="me-2 h-4 w-4" />
-                {currentStatus === "active"
-                  ? t("deactivate")
-                  : t("activate")}
+                <Power className="me-2 h-4 w-4 shrink-0" />
+                <span>
+                  {currentStatus === "active"
+                    ? t("deactivate")
+                    : t("activate")}
+                </span>
               </DropdownMenuItem>
             )}
 
@@ -170,8 +180,8 @@ export function UserActions({ user }: Props) {
                 onClick={() => setOpen(true)}
                 className="text-destructive"
               >
-                <Trash2 className="me-2 h-4 w-4" />
-                {t("delete")}
+                <Trash2 className="me-2 h-4 w-4 shrink-0" />
+                <span>{t("delete")}</span>
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

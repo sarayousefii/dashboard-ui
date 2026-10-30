@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -68,9 +69,7 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-3">
-        <LanguageSwitcher />
-        <ThemeToggle />
-
+        
         <div
           className="
             rounded-full bg-muted px-3 py-1
@@ -79,6 +78,10 @@ export function Navbar() {
         >
           {user?.role}
         </div>
+        
+        <LanguageSwitcher />
+
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

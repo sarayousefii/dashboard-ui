@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Moon, Sun } from "lucide-react";
@@ -27,8 +28,9 @@ export function ThemeToggle() {
   return (
     <Button
       type="button"
-      variant="outline"
+      variant="ghost"
       size="icon"
+      className="h-9 w-9 shrink-0 rounded-full p-0"
       disabled={!mounted}
       onClick={() => {
         setTheme(isDark ? "light" : "dark");

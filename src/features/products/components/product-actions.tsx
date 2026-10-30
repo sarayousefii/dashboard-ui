@@ -1,7 +1,8 @@
+
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -29,10 +30,16 @@ interface Props {
 
 export function ProductActions({ id }: Props) {
   const [open, setOpen] = useState(false);
+
+  const locale = useLocale();
+  const direction = locale === "fa" ? "rtl" : "ltr";
+
   const t = useTranslations("products.actions");
 
-  const { mutate: deleteProduct, isPending } =
-    useDeleteProduct();
+  const {
+    mutate: deleteProduct,
+    isPending,
+  } = useDeleteProduct();
 
   const handleDelete = () => {
     deleteProduct(id, {
@@ -42,7 +49,7 @@ export function ProductActions({ id }: Props) {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu dir={direction}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
@@ -53,33 +60,37 @@ export function ProductActions({ id }: Props) {
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuContent
+          align="end"
+          style={{ direction }}
+          className="w-40"
+        >
           <DropdownMenuItem asChild>
             <Link
               href={`/products/${id}`}
-              className="flex items-center gap-2"
+              className="flex w-full items-center"
             >
-              <Eye className="h-4 w-4" />
-              {t("view")}
+              <Eye className="me-2 h-4 w-4 shrink-0" />
+              <span>{t("view")}</span>
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
             <Link
               href={`/products/edit/${id}`}
-              className="flex items-center gap-2"
+              className="flex w-full items-center"
             >
-              <Pencil className="h-4 w-4" />
-              {t("edit")}
+              <Pencil className="me-2 h-4 w-4 shrink-0" />
+              <span>{t("edit")}</span>
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={() => setOpen(true)}
-            className="flex items-center gap-2 text-destructive"
+            className="text-destructive"
           >
-            <Trash2 className="h-4 w-4" />
-            {t("delete")}
+            <Trash2 className="me-2 h-4 w-4 shrink-0" />
+            <span>{t("delete")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
