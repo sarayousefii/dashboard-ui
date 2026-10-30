@@ -1,11 +1,11 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
 
 interface Props<TData> {
   columns: ColumnDef<TData>[];
@@ -35,7 +35,7 @@ export function DataTable<TData>({
                 <th
                   key={header.id}
                   style={{ width: header.getSize() }}
-                  className="border-b bg-muted/40 px-4 py-3 text-left font-medium"
+                  className="border-b bg-muted/40 px-4 py-3 text-start font-medium"
                 >
                   {header.isPlaceholder
                     ? null

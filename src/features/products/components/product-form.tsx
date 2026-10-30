@@ -1,31 +1,30 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
 
 import {
-  productSchema,
-  ProductFormValues,
+  createProductSchema,
+  type ProductFormValues,
 } from "../schemas/product.schema";
-import { FormField } from "@/shared/components/form/form-field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormField } from "@/shared/components/form/form-field";
 
 interface Props {
   mode: "create" | "edit";
-
   initialData?: {
     id: number;
     title: string;
     description: string;
     price: number;
   };
-
   onSubmit: (values: ProductFormValues) => void;
-
   isPending?: boolean;
 }
 
@@ -35,21 +34,32 @@ export function ProductForm({
   onSubmit,
   isPending = false,
 }: Props) {
-  const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      price: 0,
-    },
-  });
+  const t = useTranslations("products.form");
+  const validationT = useTranslations("products.validation");
+
+  const schema = useMemo(
+    () =>
+      createProductSchema({
+        titleMin: validationT("titleMin"),
+        descriptionMin: validationT("descriptionMin"),
+        priceMin: validationT("priceMin"),
+      }),
+    [validationT],
+  );
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = form;
+  } = useForm<ProductFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      title: "",
+      description: "",
+      price: 0,
+    },
+  });
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -61,57 +71,48 @@ export function ProductForm({
     }
   }, [initialData, mode, reset]);
 
-  const submitHandler = (values: ProductFormValues) => {
-    onSubmit(values);
-  };
-
   return (
     <Card className="max-w-2xl p-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">
           {mode === "create"
-            ? "Create Product"
-            : "Edit Product"}
+            ? t("createTitle")
+            : t("editTitle")}
         </h1>
 
         <p className="text-muted-foreground">
-          Manage product information
+          {t("manageDescription")}
         </p>
       </div>
+
       <form
-        onSubmit={handleSubmit(submitHandler)}
-        className="space-y-6"
+        onSubmit={handleSubmit(onSubmit)}
+        className="mt-6 space-y-6"
       >
-        
         <FormField
-          label="Title"
+          label={t("title")}
           htmlFor="title"
           error={errors.title?.message}
         >
-          <Input
-            id="title"
-            {...register("title")}
-          />
+          <Input id="title" {...register("title")} />
         </FormField>
 
         <FormField
-          label="Description"
-          htmlFor="Description"
+          label={t("description")}
+          htmlFor="description"
           error={errors.description?.message}
         >
           <Textarea
             id="description"
-            placeholder="Description"
+            placeholder={t("description")}
             {...register("description")}
           />
         </FormField>
 
         <FormField
-          label="Price"
+          label={t("price")}
           htmlFor="price"
-          error={
-            errors.price?.message
-          }
+          error={errors.price?.message}
         >
           <Input
             id="price"
@@ -128,10 +129,10 @@ export function ProductForm({
           className="w-full"
         >
           {isPending
-            ? "Saving..."
+            ? t("saving")
             : mode === "create"
-            ? "Create Product"
-            : "Update Product"}
+              ? t("create")
+              : t("update")}
         </Button>
       </form>
     </Card>

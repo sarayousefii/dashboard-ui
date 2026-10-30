@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-
-import { DashboardLayout } from "@/shared/components/layout/dashboard-layout";
+import { useTranslations } from "next-intl";
 
 import { Card } from "@/components/ui/card";
+import { DashboardLayout } from "@/shared/components/layout/dashboard-layout";
 
 import { productDetailQuery } from "../api/products.query-options";
 
@@ -12,11 +12,12 @@ interface Props {
   id: number;
 }
 
-export function ProductDetails({
-  id,
-}: Props) {
-  const { data: product } =
-    useQuery(productDetailQuery(id));
+export function ProductDetails({ id }: Props) {
+  const t = useTranslations("products");
+
+  const { data: product } = useQuery(
+    productDetailQuery(id),
+  );
 
   if (!product) {
     return null;
@@ -31,7 +32,7 @@ export function ProductDetails({
           </h1>
 
           <p className="text-muted-foreground">
-            Product Details
+            {t("details")}
           </p>
         </div>
 
@@ -39,19 +40,15 @@ export function ProductDetails({
           <div className="space-y-4">
             <div>
               <p className="text-sm text-muted-foreground">
-                Description
+                {t("form.description")}
               </p>
-
-              <p>
-                {product.data.description}
-              </p>
+              <p>{product.data.description}</p>
             </div>
 
             <div>
               <p className="text-sm text-muted-foreground">
-                Price
+                {t("form.price")}
               </p>
-
               <p className="text-2xl font-bold">
                 ${product.data.price}
               </p>

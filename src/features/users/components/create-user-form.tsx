@@ -1,28 +1,29 @@
 "use client";
-import { UserForm } from "./user-form";
-import { useCreateUser } from "../hooks/use-users-mutations";
-import { useRouter } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
+import { useRouter } from "@/i18n/navigation";
 import { appToast } from "@/shared/lib/toast";
+import { useCreateUser } from "../hooks/use-users-mutations";
+import { UserForm } from "./user-form";
 
 export default function CreateUserForm() {
   const createUser = useCreateUser();
   const router = useRouter();
-  
+  const t = useTranslations("users.notifications");
+
   return (
     <UserForm
-          mode="create"
-          onSubmit={(values) =>
-            createUser.mutate(values, {
-              onSuccess: () => {
-                appToast.success(
-                  "User created successfully"
-                );
-    
-                router.push("/users");
-              }
-            })
-          }
-          isLoading={createUser.isPending}
-        />
+      mode="create"
+      isLoading={createUser.isPending}
+      onSubmit={(values) =>
+        createUser.mutate(values, {
+          onSuccess: () => {
+            appToast.success(t("created"));
+            router.push("/users");
+          },
+        })
+      }
+    />
   );
 }

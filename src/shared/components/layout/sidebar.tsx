@@ -1,21 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { navigation } from "@/config/navigation";
-
-import { useUIStore } from "@/store/ui-store";
-
 import { usePermission } from "@/features/auth/hooks/use-permission";
-
+import { Link, usePathname } from "@/i18n/navigation";
 import { hasPermission } from "@/shared/lib/permissions";
+import { useUIStore } from "@/store/ui-store";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const t = useTranslations("navigation");
+  const brandT = useTranslations("brand");
 
   const isSidebarOpen = useUIStore(
-    (state) => state.isSidebarOpen
+    (state) => state.isSidebarOpen,
   );
 
   const { role } = usePermission();
@@ -25,23 +24,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside
-      className="
-        hidden
-        md:flex
-        w-64
-        flex-col
-        border-r
-        bg-background
-      "
-    >
+    <aside className="hidden w-64 flex-col border-s bg-background md:flex">
       <div className="border-b p-6">
-        <h2 className="text-xl font-bold">
-          Dashboard UI
-        </h2>
+        <h2 className="text-xl font-bold">Dashboard UI</h2>
 
         <p className="text-sm text-muted-foreground">
-          Admin Panel
+          {brandT("adminPanel")}
         </p>
       </div>
 
@@ -49,7 +37,7 @@ export function Sidebar() {
         {navigation.map((item) => {
           const canAccess = hasPermission(
             role,
-            item.permission
+            item.permission,
           );
 
           if (!canAccess) {
@@ -57,21 +45,14 @@ export function Sidebar() {
           }
 
           const Icon = item.icon;
-
-          const isActive =
-            pathname === item.href;
+          const isActive = pathname === item.href;
 
           return (
             <Link
               key={item.href}
               href={item.href}
               className={`
-                flex
-                items-center
-                gap-3
-                rounded-lg
-                px-4
-                py-3
+                flex items-center gap-3 rounded-lg px-4 py-3
                 transition-colors
                 ${
                   isActive
@@ -81,8 +62,7 @@ export function Sidebar() {
               `}
             >
               <Icon className="h-4 w-4" />
-
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </Link>
           );
         })}

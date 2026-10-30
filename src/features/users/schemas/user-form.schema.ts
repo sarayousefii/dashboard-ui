@@ -1,23 +1,28 @@
 import { z } from "zod";
 
-export const userFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(2),
+interface UserValidationMessages {
+  firstNameMin: string;
+  lastNameMin: string;
+  emailInvalid: string;
+  ageMin: string;
+}
 
-  lastName: z
-    .string()
-    .min(2),
+export function createUserFormSchema(
+  messages: UserValidationMessages,
+) {
+  return z.object({
+    firstName: z.string().min(2, messages.firstNameMin),
 
-  email: z
-    .email(),
+    lastName: z.string().min(2, messages.lastNameMin),
 
-  age: z
-    .number()
-    .min(18),
-});
+    email: z.email({
+      error: messages.emailInvalid,
+    }),
 
-export type UserFormValues =
-  z.infer<
-    typeof userFormSchema
-  >;
+    age: z.number().min(18, messages.ageMin),
+  });
+}
+
+export type UserFormValues = z.infer<
+  ReturnType<typeof createUserFormSchema>
+>;

@@ -1,13 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 import type { ApiResponse } from "@/shared/types/api-response";
 import type { Product } from "../types/product.types";
-import { appToast } from "@/shared/lib/toast";
 
-import { ProductForm } from "./product-form";
+import { appToast } from "@/shared/lib/toast";
 import { useUpdateProduct } from "../hooks/use-update-product";
+import { ProductForm } from "./product-form";
 
 interface Props {
   product: ApiResponse<Product>;
@@ -16,6 +17,8 @@ interface Props {
 export function EditProductForm({ product }: Props) {
   const updateMutation = useUpdateProduct();
   const router = useRouter();
+  const t = useTranslations("products.notifications");
+
   const productData = product.data;
 
   return (
@@ -33,7 +36,7 @@ export function EditProductForm({ product }: Props) {
           { id: productData.id, data: values },
           {
             onSuccess: () => {
-              appToast.success("Product updated successfully");
+              appToast.success(t("updated"));
               router.push("/products");
             },
           },

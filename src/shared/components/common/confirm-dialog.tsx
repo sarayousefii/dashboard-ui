@@ -1,14 +1,15 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
@@ -16,44 +17,38 @@ import { Button } from "@/components/ui/button";
 interface ConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
   title?: string;
   description?: string;
-
   confirmText?: string;
   cancelText?: string;
-
   onConfirm: () => void;
   loading?: boolean;
-
   children?: React.ReactNode;
 }
 
 export function ConfirmDialog({
   open,
   onOpenChange,
-
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-
+  title,
+  description,
+  confirmText,
+  cancelText,
   onConfirm,
   loading = false,
-
   children,
 }: ConfirmDialogProps) {
+  const t = useTranslations("common.confirmDialog");
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children}
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{title ?? t("title")}</DialogTitle>
 
           <DialogDescription>
-            {description}
+            {description ?? t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -63,7 +58,7 @@ export function ConfirmDialog({
             onClick={() => onOpenChange(false)}
             disabled={loading}
           >
-            {cancelText}
+            {cancelText ?? t("cancel")}
           </Button>
 
           <Button
@@ -71,7 +66,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "Loading..." : confirmText}
+            {loading ? t("loading") : confirmText ?? t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

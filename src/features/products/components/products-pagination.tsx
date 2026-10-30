@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -11,27 +13,25 @@ export function ProductsPagination({
   page,
   setPage,
 }: Props) {
+  const t = useTranslations("products.pagination");
+
   return (
     <div className="flex items-center gap-4">
       <Button
         variant="outline"
         disabled={page === 1}
-        onClick={() =>
-          setPage(page - 1)
-        }
+        onClick={() => setPage(page - 1)}
       >
-        Previous
+        {t("previous")}
       </Button>
 
-      <span>Page {page}</span>
+      <span>{t("page", { page })}</span>
 
       <Button
         variant="outline"
-        onClick={() =>
-          setPage(page + 1)
-        }
+        onClick={() => setPage(page + 1)}
       >
-        Next
+        {t("next")}
       </Button>
     </div>
   );

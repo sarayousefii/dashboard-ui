@@ -1,7 +1,9 @@
 "use client";
 
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+
 import { QueryProvider } from "./query-provider";
+import { ThemeProvider } from "./theme-provider";
 
 interface Props {
   children: ReactNode;
@@ -9,8 +11,8 @@ interface Props {
 
 export function Providers({ children }: Props) {
   return (
-    <QueryProvider>
-      {children}
-    </QueryProvider>
+    <ThemeProvider>
+      <QueryProvider>{children}</QueryProvider>
+    </ThemeProvider>
   );
 }

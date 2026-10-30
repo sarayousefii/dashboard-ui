@@ -1,0 +1,207 @@
+{
+  "common": {
+    "loading": "در حال بارگذاری...",
+    "confirmDialog": {
+      "title": "آیا مطمئن هستید؟",
+      "description": "این عملیات قابل بازگشت نیست.",
+      "confirm": "تأیید",
+      "cancel": "انصراف",
+      "loading": "در حال انجام..."
+    }
+  },
+  "brand": {
+    "adminPanel": "پنل مدیریت"
+  },
+  "navigation": {
+    "dashboard": "داشبورد",
+    "products": "محصولات",
+    "users": "کاربران"
+  },
+  "navbar": {
+    "loading": "در حال بارگذاری...",
+    "hello": "سلام، {name}",
+    "welcomeBack": "خوش آمدید",
+    "logout": "خروج",
+    "toggleSidebar": "تغییر وضعیت منو"
+  },
+  "language": {
+    "switchToPersian": "تغییر زبان به فارسی",
+    "switchToEnglish": "تغییر زبان به انگلیسی"
+  },
+  "theme": {
+    "label": "تغییر پوسته",
+    "switchToLight": "تغییر به حالت روشن",
+    "switchToDark": "تغییر به حالت تاریک"
+  },
+  "auth": {
+    "login": {
+      "title": "ورود",
+      "username": "نام کاربری",
+      "usernamePlaceholder": "نام کاربری خود را وارد کنید",
+      "password": "رمز عبور",
+      "passwordPlaceholder": "رمز عبور خود را وارد کنید",
+      "submit": "ورود",
+      "submitting": "در حال ورود..."
+    }
+  },
+  "notifications": {
+    "loginSuccess": "ورود با موفقیت انجام شد",
+    "logoutSuccess": "خروج با موفقیت انجام شد"
+  },
+  "products": {
+    "title": "محصولات",
+    "create": "ایجاد محصول",
+    "details": "جزئیات محصول",
+    "table": {
+      "title": "عنوان",
+      "price": "قیمت"
+    },
+    "form": {
+      "createTitle": "ایجاد محصول",
+      "editTitle": "ویرایش محصول",
+      "manageDescription": "مدیریت اطلاعات محصول",
+      "title": "عنوان",
+      "description": "توضیحات",
+      "price": "قیمت",
+      "create": "ایجاد محصول",
+      "update": "به‌روزرسانی محصول",
+      "saving": "در حال ذخیره..."
+    },
+    "filters": {
+      "search": "جستجوی محصولات...",
+      "sortBy": "مرتب‌سازی براساس",
+      "title": "عنوان",
+      "price": "قیمت",
+      "ascending": "صعودی",
+      "descending": "نزولی"
+    },
+    "actions": {
+      "open": "عملیات محصول",
+      "view": "مشاهده",
+      "edit": "ویرایش",
+      "delete": "حذف",
+      "deleteTitle": "حذف محصول",
+      "deleteDescription": "این عملیات قابل بازگشت نیست.",
+      "confirmDelete": "حذف"
+    },
+    "pagination": {
+      "previous": "قبلی",
+      "next": "بعدی",
+      "page": "صفحه {page}"
+    },
+    "states": {
+      "errorTitle": "مشکلی رخ داده است",
+      "empty": "محصولی یافت نشد",
+      "retry": "تلاش مجدد",
+      "notFoundTitle": "محصول پیدا نشد",
+      "notFoundDescription": "محصول موردنظر شما وجود ندارد.",
+      "backToProducts": "بازگشت به محصولات"
+    },
+    "notifications": {
+      "created": "محصول با موفقیت ایجاد شد",
+      "updated": "محصول با موفقیت به‌روزرسانی شد",
+      "deleted": "محصول با موفقیت حذف شد",
+      "createFailed": "ایجاد محصول ناموفق بود",
+      "updateFailed": "به‌روزرسانی محصول ناموفق بود",
+      "deleteFailed": "حذف محصول ناموفق بود"
+    },
+    "validation": {
+      "titleMin": "عنوان باید حداقل ۳ کاراکتر باشد.",
+      "descriptionMin": "توضیحات باید حداقل ۱۰ کاراکتر باشد.",
+      "priceMin": "قیمت باید حداقل ۱ باشد."
+    }
+  },
+   "users": {
+    "title": "کاربران",
+    "create": "ایجاد کاربر",
+    "details": "جزئیات کاربر",
+    "common": {
+      "loading": "در حال بارگذاری..."
+    },
+    "form": {
+      "createTitle": "ایجاد کاربر",
+      "editTitle": "ویرایش کاربر",
+      "manageDescription": "مدیریت اطلاعات کاربر",
+      "firstName": "نام",
+      "lastName": "نام خانوادگی",
+      "email": "ایمیل",
+      "age": "سن",
+      "create": "ایجاد کاربر",
+      "update": "به‌روزرسانی کاربر"
+    },
+    "filters": {
+      "search": "جستجوی کاربران...",
+      "sortBy": "مرتب‌سازی براساس",
+      "firstName": "نام",
+      "lastName": "نام خانوادگی",
+      "age": "سن",
+      "ascending": "صعودی",
+      "descending": "نزولی"
+    },
+    "table": {
+      "firstName": "نام",
+      "lastName": "نام خانوادگی",
+      "email": "ایمیل",
+      "age": "سن",
+      "role": "نقش",
+      "status": "وضعیت"
+    },
+    "roles": {
+      "admin": "مدیر",
+      "editor": "ویرایشگر",
+      "viewer": "مشاهده‌گر"
+    },
+    "statuses": {
+      "active": "فعال",
+      "inactive": "غیرفعال",
+      "pending": "در انتظار"
+    },
+    "actions": {
+      "open": "عملیات کاربر",
+      "view": "مشاهده",
+      "edit": "ویرایش",
+      "makeAdmin": "تغییر نقش به مدیر",
+      "makeEditor": "تغییر نقش به ویرایشگر",
+      "makeViewer": "تغییر نقش به مشاهده‌گر",
+      "deactivate": "غیرفعال‌سازی",
+      "activate": "فعال‌سازی",
+      "delete": "حذف",
+      "deleteTitle": "حذف کاربر",
+      "deleteDescription": "آیا از حذف کاربر {name} اطمینان دارید؟",
+      "confirmDelete": "حذف"
+    },
+    "pagination": {
+      "previous": "قبلی",
+      "next": "بعدی",
+      "page": "صفحه {page}"
+    },
+    "states": {
+      "errorTitle": "مشکلی رخ داده است",
+      "empty": "کاربری یافت نشد"
+    },
+    "validation": {
+      "firstNameMin": "نام باید حداقل ۲ کاراکتر باشد.",
+      "lastNameMin": "نام خانوادگی باید حداقل ۲ کاراکتر باشد.",
+      "emailInvalid": "لطفاً یک آدرس ایمیل معتبر وارد کنید.",
+      "ageMin": "سن کاربر باید حداقل ۱۸ سال باشد."
+    },
+    "notifications": {
+      "created": "کاربر با موفقیت ایجاد شد"
+    }
+  },
+  "dashboard": {
+    "title": "داشبورد",
+    "description": "خوش آمدید! در این بخش نمای کلی سیستم را مشاهده می‌کنید.",
+    "loadError": "دریافت اطلاعات داشبورد ناموفق بود",
+    "charts": {
+      "monthlyProducts": "محصولات ماهانه",
+      "userStatus": "وضعیت کاربران"
+    },
+    "stats": {
+      "totalProducts": "تعداد کل محصولات",
+      "totalUsers": "تعداد کل کاربران",
+      "activeUsers": "کاربران فعال",
+      "pendingUsers": "کاربران در انتظار"
+    }
+  }
+}

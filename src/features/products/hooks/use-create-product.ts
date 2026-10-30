@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import type { ApiResponse } from "@/shared/types/api-response";
 import { createProduct } from "../api/products.mutations";
 import { productsKeys } from "../api/products.query-keys";
 import type {
@@ -7,13 +8,14 @@ import type {
   Product,
   ProductListData,
 } from "../types/product.types";
-import type { ApiResponse } from "@/shared/types/api-response";
 
-import { appToast } from "@/shared/lib/toast";
 import { getErrorMessage } from "@/shared/lib/api-error";
+import { appToast } from "@/shared/lib/toast";
+import { useTranslations } from "next-intl";
 
 export function useCreateProduct() {
   const queryClient = useQueryClient();
+  const t = useTranslations("products.notifications");
 
   return useMutation({
     mutationFn: createProduct,
@@ -67,7 +69,7 @@ export function useCreateProduct() {
         }
       }
 
-      appToast.error(getErrorMessage(error) || "Create failed");
+      appToast.error(getErrorMessage(error) || t("createFailed"));
     },
 
     onSettled: () => {

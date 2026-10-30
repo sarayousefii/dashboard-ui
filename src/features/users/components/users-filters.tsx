@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Input } from "@/components/ui/input";
 
 import {
@@ -12,22 +14,11 @@ import {
 
 type Props = {
   search: string;
-
   sortBy?: string;
-
   order?: string;
-
-  onSearchChange: (
-    value: string
-  ) => void;
-
-  onSortChange: (
-    value: string
-  ) => void;
-
-  onOrderChange: (
-    value: string
-  ) => void;
+  onSearchChange: (value: string) => void;
+  onSortChange: (value: string) => void;
+  onOrderChange: (value: string) => void;
 };
 
 export function UsersFilters({
@@ -38,46 +29,39 @@ export function UsersFilters({
   onSortChange,
   onOrderChange,
 }: Props) {
+  const t = useTranslations("users.filters");
+
   return (
     <div className="flex flex-wrap gap-4">
       <Input
         value={search ?? ""}
-        onChange={(e) =>
-          onSearchChange(e.target.value)
-        }
-        placeholder="Search users..."
+        onChange={(e) => onSearchChange(e.target.value)}
+        placeholder={t("search")}
       />
 
-      <Select
-        value={sortBy}
-        onValueChange={
-          onSortChange
-        }
-      >
+      <Select value={sortBy} onValueChange={onSortChange}>
         <SelectTrigger className="w-45">
-          <SelectValue placeholder="Sort By" />
+          <SelectValue placeholder={t("sortBy")} />
         </SelectTrigger>
 
         <SelectContent>
           <SelectItem value="firstName">
-            First Name
+            {t("firstName")}
           </SelectItem>
 
           <SelectItem value="lastName">
-            Last Name
+            {t("lastName")}
           </SelectItem>
 
           <SelectItem value="age">
-            Age
+            {t("age")}
           </SelectItem>
         </SelectContent>
       </Select>
 
       <Select
         value={order || "asc"}
-        onValueChange={
-          onOrderChange
-        }
+        onValueChange={onOrderChange}
       >
         <SelectTrigger className="w-45">
           <SelectValue />
@@ -85,11 +69,11 @@ export function UsersFilters({
 
         <SelectContent>
           <SelectItem value="asc">
-            Asc
+            {t("ascending")}
           </SelectItem>
 
           <SelectItem value="desc">
-            Desc
+            {t("descending")}
           </SelectItem>
         </SelectContent>
       </Select>

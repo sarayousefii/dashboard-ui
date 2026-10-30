@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -26,31 +28,38 @@ export function ProductsFilters({
   onSortChange,
   onOrderChange,
 }: Props) {
+  const t = useTranslations("products.filters");
+
   return (
-    <div className="flex gap-4 flex-wrap">
+    <div className="flex flex-wrap gap-4">
       <Input
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        placeholder="Search products..."
+        placeholder={t("search")}
       />
 
       <Select value={sortBy} onValueChange={onSortChange}>
         <SelectTrigger className="w-45">
-          <SelectValue placeholder="Sort By" />
+          <SelectValue placeholder={t("sortBy")} />
         </SelectTrigger>
+
         <SelectContent>
-          <SelectItem value="title">Title</SelectItem>
-          <SelectItem value="price">Price</SelectItem>
+          <SelectItem value="title">{t("title")}</SelectItem>
+          <SelectItem value="price">{t("price")}</SelectItem>
         </SelectContent>
       </Select>
 
-      <Select value={order || "asc"} onValueChange={onOrderChange}>
+      <Select
+        value={order || "asc"}
+        onValueChange={onOrderChange}
+      >
         <SelectTrigger className="w-45">
           <SelectValue />
         </SelectTrigger>
+
         <SelectContent>
-          <SelectItem value="asc">Asc</SelectItem>
-          <SelectItem value="desc">Desc</SelectItem>
+          <SelectItem value="asc">{t("ascending")}</SelectItem>
+          <SelectItem value="desc">{t("descending")}</SelectItem>
         </SelectContent>
       </Select>
     </div>

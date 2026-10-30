@@ -6,23 +6,21 @@ import {
 
 export const navigation = [
   {
-    label: "Dashboard",
+    labelKey: "dashboard",
     href: "/",
     icon: LayoutDashboard,
     permission: "dashboard.view",
   },
-
   {
-    label: "Products",
+    labelKey: "products",
     href: "/products",
     icon: Package,
     permission: "products.view",
   },
-
   {
-    label: "Users",
+    labelKey: "users",
     href: "/users",
     icon: Users,
     permission: "users.view",
   },
-];
+] as const;
