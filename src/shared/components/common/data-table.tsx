@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
@@ -10,11 +11,13 @@ import {
 interface Props<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData>({
   columns,
   data,
+  onRowClick,
 }: Props<TData>) {
   // TanStack Table's API is intentionally used here. React Compiler skips
   // memoizing this component because useReactTable returns non-memoizable APIs.
@@ -48,16 +51,57 @@ export function DataTable<TData>({
             </tr>
           ))}
         </thead>
+
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-muted/30">
+            <tr
+              key={row.id}
+              tabIndex={onRowClick ? 0 : undefined}
+              onClick={(event) => {
+                if (!onRowClick) return;
+
+                const target = event.target;
+
+                if (
+                  target instanceof Element &&
+                  target.closest(
+                    "button, a, [role='menuitem'], input, select, textarea",
+                  )
+                ) {
+                  return;
+                }
+
+                onRowClick(row.original);
+              }}
+              onKeyDown={(event) => {
+                if (
+                  !onRowClick ||
+                  event.target !== event.currentTarget
+                ) {
+                  return;
+                }
+
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onRowClick(row.original);
+                }
+              }}
+              className={
+                onRowClick
+                  ? "cursor-pointer hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+                  : "hover:bg-muted/30"
+              }
+            >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
                   style={{ width: cell.column.getSize() }}
                   className="border-b px-4 py-3"
                 >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext(),
+                  )}
                 </td>
               ))}
             </tr>

@@ -1,22 +1,27 @@
 
 "use client";
 
+import { LogOut, Menu, UserRound } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { useLogout } from "@/features/auth/hooks/use-logout";
+
 import { useUIStore } from "@/store/ui-store";
+
+import { Link } from "@/i18n/navigation";
+
 import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "./theme-toggle";
-
-import { LogOut, Menu } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 export function Navbar() {
   const { data, isLoading } = useCurrentUser();
@@ -69,7 +74,6 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-3">
-        
         <div
           className="
             rounded-full bg-muted px-3 py-1
@@ -78,9 +82,8 @@ export function Navbar() {
         >
           {user?.role}
         </div>
-        
-        <LanguageSwitcher />
 
+        <LanguageSwitcher />
         <ThemeToggle />
 
         <DropdownMenu>
@@ -102,10 +105,27 @@ export function Navbar() {
           <DropdownMenuContent align="end" className="w-56">
             <div className="border-b px-3 py-2">
               <p className="font-medium">{user?.name}</p>
+
               <p className="text-xs text-muted-foreground">
                 {user?.role}
               </p>
             </div>
+
+            {user?.id && (
+              <>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/users/${user.id}`}
+                    className="flex w-full cursor-pointer items-center"
+                  >
+                    <UserRound className="me-2 h-4 w-4" />
+                    {t("profile")}
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+              </>
+            )}
 
             <DropdownMenuItem
               onClick={() => logout()}

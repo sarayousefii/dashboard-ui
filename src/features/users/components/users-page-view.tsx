@@ -1,27 +1,29 @@
+
 "use client";
 
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Link, useRouter } from "@/i18n/navigation";
+
+import { Plus } from "lucide-react";
 
 import { DataTable } from "@/shared/components/common/data-table";
 import { EmptyState } from "@/shared/components/common/empty-state";
 import { ErrorState } from "@/shared/components/common/error-state";
 import { TableSkeleton } from "@/shared/components/common/table-skeleton";
 import { DashboardLayout } from "@/shared/components/layout/dashboard-layout";
-
 import { getErrorMessage } from "@/shared/lib/api-error";
-import { useUsersView } from "../hooks/use-users-view";
 
+import { useUsersView } from "../hooks/use-users-view";
 import { createUserColumns } from "./users-columns";
 import { UsersFilters } from "./users-filters";
 import { UsersPagination } from "./users-pagination";
 
-import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
-import { Plus } from "lucide-react";
-
 export default function UsersPageView() {
   const t = useTranslations("users");
+  const router = useRouter();
 
   const {
     data,
@@ -97,6 +99,9 @@ export default function UsersPageView() {
         <DataTable
           columns={columns}
           data={data.data.users}
+          onRowClick={(user) => {
+            router.push(`/users/${user.id}`);
+          }}
         />
 
         <UsersPagination

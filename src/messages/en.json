@@ -22,7 +22,8 @@
     "hello": "Hello, {name}",
     "welcomeBack": "Welcome back",
     "logout": "Logout",
-    "toggleSidebar": "Toggle sidebar"
+    "toggleSidebar": "Toggle sidebar",
+    "profile": "My Profile"
   },
   "language": {
     "switchToPersian": "Switch to Persian",
@@ -127,7 +128,8 @@
       "email": "Email",
       "age": "Age",
       "create": "Create User",
-      "update": "Update User"
+      "update": "Update User",
+      "saving": "Saving..."
     },
     "filters": {
       "search": "Search users...",
@@ -202,6 +204,29 @@
       "totalUsers": "Total Users",
       "activeUsers": "Active Users",
       "pendingUsers": "Pending Users"
+    }
+  },
+  "profile": {
+    "title": "User Profile",
+    "selfTitle": "My Profile",
+    "description": "View and manage profile information.",
+    "edit": "Edit Profile",
+    "cancel": "Cancel",
+    "loading": "Loading profile...",
+    "accessDenied": "You don't have permission to view this user's profile.",
+    "notFound": "User profile could not be found.",
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "age": "Age",
+      "role": "Role",
+      "status": "Status"
+    },
+    "form": {
+      "editTitle": "Edit Profile",
+      "manageDescription": "Update your personal profile information.",
+      "update": "Save Changes"
     }
   }
 }
