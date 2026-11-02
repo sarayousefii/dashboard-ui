@@ -1,5 +1,6 @@
-import UserDetails from "@/features/users/components/user-details";
 
-export default function Page() {
-  return <UserDetails />;
+import ProfilePage from "@/features/profile/components/profile-page";
+
+export default function UserProfilePage() {
+  return <ProfilePage />;
 }

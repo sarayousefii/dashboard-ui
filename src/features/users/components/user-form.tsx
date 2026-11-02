@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +20,9 @@ type Props = {
   isLoading?: boolean;
   initialValues?: Partial<UserFormValues>;
   mode?: "create" | "edit";
+  title?: string;
+  description?: string;
+  submitLabel?: string;
 };
 
 export function UserForm({
@@ -26,6 +30,9 @@ export function UserForm({
   isLoading = false,
   initialValues,
   mode = "create",
+  title,
+  description,
+  submitLabel,
 }: Props) {
   const t = useTranslations("users.form");
   const validationT = useTranslations("users.validation");
@@ -66,13 +73,14 @@ export function UserForm({
     <Card className="max-w-2xl p-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">
-          {mode === "edit"
-            ? t("editTitle")
-            : t("createTitle")}
+          {title ??
+            (mode === "edit"
+              ? t("editTitle")
+              : t("createTitle"))}
         </h1>
 
         <p className="text-muted-foreground">
-          {t("manageDescription")}
+          {description ?? t("manageDescription")}
         </p>
       </div>
 
@@ -80,70 +88,81 @@ export function UserForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="mt-6 max-w-md space-y-4"
       >
-        <Input
-          placeholder={t("firstName")}
-          aria-label={t("firstName")}
-          aria-invalid={!!form.formState.errors.firstName}
-          {...form.register("firstName")}
-        />
+        <div>
+          <Input
+            placeholder={t("firstName")}
+            aria-label={t("firstName")}
+            aria-invalid={!!form.formState.errors.firstName}
+            {...form.register("firstName")}
+          />
 
-        {form.formState.errors.firstName && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.firstName.message}
-          </p>
-        )}
+          {form.formState.errors.firstName && (
+            <p className="mt-1 text-sm text-destructive">
+              {form.formState.errors.firstName.message}
+            </p>
+          )}
+        </div>
 
-        <Input
-          placeholder={t("lastName")}
-          aria-label={t("lastName")}
-          aria-invalid={!!form.formState.errors.lastName}
-          {...form.register("lastName")}
-        />
+        <div>
+          <Input
+            placeholder={t("lastName")}
+            aria-label={t("lastName")}
+            aria-invalid={!!form.formState.errors.lastName}
+            {...form.register("lastName")}
+          />
 
-        {form.formState.errors.lastName && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.lastName.message}
-          </p>
-        )}
+          {form.formState.errors.lastName && (
+            <p className="mt-1 text-sm text-destructive">
+              {form.formState.errors.lastName.message}
+            </p>
+          )}
+        </div>
 
-        <Input
-          type="email"
-          placeholder={t("email")}
-          aria-label={t("email")}
-          aria-invalid={!!form.formState.errors.email}
-          {...form.register("email")}
-        />
+        <div>
+          <Input
+            type="email"
+            placeholder={t("email")}
+            aria-label={t("email")}
+            aria-invalid={!!form.formState.errors.email}
+            {...form.register("email")}
+          />
 
-        {form.formState.errors.email && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.email.message}
-          </p>
-        )}
+          {form.formState.errors.email && (
+            <p className="mt-1 text-sm text-destructive">
+              {form.formState.errors.email.message}
+            </p>
+          )}
+        </div>
 
-        <Input
-          type="number"
-          placeholder={t("age")}
-          aria-label={t("age")}
-          aria-invalid={!!form.formState.errors.age}
-          {...form.register("age", {
-            valueAsNumber: true,
-          })}
-        />
+        <div>
+          <Input
+            type="number"
+            placeholder={t("age")}
+            aria-label={t("age")}
+            aria-invalid={!!form.formState.errors.age}
+            {...form.register("age", {
+              valueAsNumber: true,
+            })}
+          />
 
-        {form.formState.errors.age && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.age.message}
-          </p>
-        )}
+          {form.formState.errors.age && (
+            <p className="mt-1 text-sm text-destructive">
+              {form.formState.errors.age.message}
+            </p>
+          )}
+        </div>
 
         <Button
           type="submit"
           disabled={isLoading}
           className="w-full"
         >
-          {mode === "edit"
-            ? t("update")
-            : t("create")}
+          {isLoading
+            ? t("saving")
+            : submitLabel ??
+              (mode === "edit"
+                ? t("update")
+                : t("create"))}
         </Button>
       </form>
     </Card>
