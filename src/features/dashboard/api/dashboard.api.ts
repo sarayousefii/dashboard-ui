@@ -2,7 +2,7 @@ import { api } from "@/shared/lib/axios";
 import type { ApiResponse } from "@/shared/types/api-response";
 
 import type { ProductListData } from "@/features/products/types/product.types";
-import type { UserListData } from "@/features/users/types/user.types";
+import type { UserListData } from "@/features/users/shared/types/user.types";
 import type { DashboardStats } from "../types/dashboard.types";
 
 type ProductCollectionPayload = ApiResponse<ProductListData> | ProductListData;

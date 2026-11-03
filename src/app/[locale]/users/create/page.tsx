@@ -1,13 +1,13 @@
-import CreateUserForm from "@/features/users/components/create-user-form";
+import { redirect } from 'next/navigation';
 
-export const metadata = {
-  title: "Create User",
-};
+interface Props {
+  params: Promise<{
+    locale: string;
+  }>;
+}
 
-export default function CreateUserPage() {
-  return (
-    <div className="max-w-2xl mx-auto py-10">
-      <CreateUserForm />
-    </div>
-  );
+export default async function CreateUserPage({ params }: Props) {
+  const { locale } = await params;
+
+  redirect(`/${locale}/users`);
 }

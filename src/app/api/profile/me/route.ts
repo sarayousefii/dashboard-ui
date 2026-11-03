@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-import type { User } from "@/features/users/types/user.types";
+import type { User } from "@/features/users/shared/types/user.types";
 import { fetchMockApi } from "@/shared/lib/mock-api";
 
 const MOCK_SESSION_TOKEN = "fake-jwt-token";

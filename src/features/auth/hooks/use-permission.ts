@@ -1,17 +1,27 @@
-import { useCurrentUser } from "./use-current-user";
-import { hasPermission } from "@/shared/lib/permissions";
+import { useCurrentUser } from './use-current-user';
+
+import type { User } from '@/features/users/shared/types/user.types';
+
+import { hasPermission } from '@/shared/lib/permissions';
 
 export function usePermission() {
   const { data } = useCurrentUser();
 
-  const role = data?.user?.role;
+  const user = data?.user as User | undefined;
+
+  const role = user?.role;
+
+  const canAccess = (permission: string) => hasPermission(user, permission);
 
   return {
     role,
+    roles: user?.roles ?? [],
+    permissions: user?.permissions ?? [],
+    canAccess,
 
-    canCreateUser: hasPermission(role, "users.create"),
-    canEditUser: hasPermission(role, "users.edit"),
-    canDeleteUser: hasPermission(role, "users.delete"),
-    canChangeRole: hasPermission(role, "users.changeRole"),
+    canCreateUser: canAccess('users.create'),
+    canEditUser: canAccess('users.edit'),
+    canDeleteUser: canAccess('users.delete'),
+    canChangeRole: canAccess('users.changeRole'),
   };
 }

@@ -11,11 +11,11 @@
     },
     {
       "id": 2,
-      "firstName": "Olivia",
+      "firstName": "1Olivia",
       "lastName": "Martinez",
       "email": "olivia@example.com",
       "age": 27,
-      "role": "editor",
+      "role": "viewer",
       "status": "active"
     },
     {
@@ -24,7 +24,7 @@
       "lastName": "Chen",
       "email": "ethan@example.com",
       "age": 32,
-      "role": "viewer",
+      "role": "editor",
       "status": "active"
     },
     {
@@ -71,8 +71,348 @@
       "age": 22,
       "role": "viewer",
       "status": "inactive"
+    },
+    {
+      "firstName": "sara",
+      "lastName": "yousefi",
+      "email": "sara.youseffi87@gmail.com",
+      "age": 36,
+      "role": "admin",
+      "status": "active",
+      "id": 9
+    },
+    {
+      "firstName": "gbdfgg",
+      "lastName": "یوسفی",
+      "email": "sara.youseffi@gmail.com",
+      "age": 18,
+      "role": "viewer",
+      "status": "active",
+      "id": 10
+    },
+    {
+      "firstName": "سارا",
+      "lastName": "یوسفی",
+      "email": "sara@gmail.com",
+      "age": 28,
+      "role": "viewer",
+      "status": "active",
+      "id": 11
+    },
+    {
+      "firstName": "werewrwer",
+      "lastName": "ewerewr",
+      "email": "ewrewrer@dfgfd.com",
+      "age": 18,
+      "role": "viewer",
+      "status": "active",
+      "id": 12
     }
   ],
   "products": [],
-  "organizations": []
+  "organizations": [],
+  "roles": [
+    {
+      "id": "role-admin",
+      "name": "Administrator",
+      "slug": "admin",
+      "description": "Full access to all application features.",
+      "isSystem": true
+    },
+    {
+      "id": "role-editor",
+      "name": "Editor",
+      "slug": "editor",
+      "description": "Can view users and manage products.",
+      "isSystem": true
+    },
+    {
+      "id": "role-viewer",
+      "name": "Viewer",
+      "slug": "viewer",
+      "description": "Read-only access to products and dashboard.",
+      "isSystem": true
+    }
+  ],
+  "permissions": [
+    {
+      "id": "dashboard.view",
+      "key": "dashboard.view",
+      "resource": "dashboard",
+      "action": "view",
+      "labelKey": "permissions.dashboard.view"
+    },
+    {
+      "id": "products.view",
+      "key": "products.view",
+      "resource": "products",
+      "action": "view",
+      "labelKey": "permissions.products.view"
+    },
+    {
+      "id": "products.create",
+      "key": "products.create",
+      "resource": "products",
+      "action": "create",
+      "labelKey": "permissions.products.create"
+    },
+    {
+      "id": "products.edit",
+      "key": "products.edit",
+      "resource": "products",
+      "action": "edit",
+      "labelKey": "permissions.products.edit"
+    },
+    {
+      "id": "products.delete",
+      "key": "products.delete",
+      "resource": "products",
+      "action": "delete",
+      "labelKey": "permissions.products.delete"
+    },
+    {
+      "id": "users.view",
+      "key": "users.view",
+      "resource": "users",
+      "action": "view",
+      "labelKey": "permissions.users.view"
+    },
+    {
+      "id": "users.create",
+      "key": "users.create",
+      "resource": "users",
+      "action": "create",
+      "labelKey": "permissions.users.create"
+    },
+    {
+      "id": "users.edit",
+      "key": "users.edit",
+      "resource": "users",
+      "action": "edit",
+      "labelKey": "permissions.users.edit"
+    },
+    {
+      "id": "users.delete",
+      "key": "users.delete",
+      "resource": "users",
+      "action": "delete",
+      "labelKey": "permissions.users.delete"
+    },
+    {
+      "id": "users.changeRole",
+      "key": "users.changeRole",
+      "resource": "users",
+      "action": "changeRole",
+      "labelKey": "permissions.users.changeRole"
+    },
+    {
+      "id": "roles.view",
+      "key": "roles.view",
+      "resource": "roles",
+      "action": "view",
+      "labelKey": "permissions.roles.view"
+    },
+    {
+      "id": "roles.create",
+      "key": "roles.create",
+      "resource": "roles",
+      "action": "create",
+      "labelKey": "permissions.roles.create"
+    },
+    {
+      "id": "roles.edit",
+      "key": "roles.edit",
+      "resource": "roles",
+      "action": "edit",
+      "labelKey": "permissions.roles.edit"
+    },
+    {
+      "id": "roles.delete",
+      "key": "roles.delete",
+      "resource": "roles",
+      "action": "delete",
+      "labelKey": "permissions.roles.delete"
+    },
+    {
+      "id": "roles.assignPermissions",
+      "key": "roles.assignPermissions",
+      "resource": "roles",
+      "action": "assignPermissions",
+      "labelKey": "permissions.roles.assignPermissions"
+    }
+  ],
+  "rolePermissions": [
+    {
+      "id": "role-admin::dashboard.view",
+      "roleId": "role-admin",
+      "permissionId": "dashboard.view"
+    },
+    {
+      "id": "role-admin::products.view",
+      "roleId": "role-admin",
+      "permissionId": "products.view"
+    },
+    {
+      "id": "role-admin::products.create",
+      "roleId": "role-admin",
+      "permissionId": "products.create"
+    },
+    {
+      "id": "role-admin::products.edit",
+      "roleId": "role-admin",
+      "permissionId": "products.edit"
+    },
+    {
+      "id": "role-admin::products.delete",
+      "roleId": "role-admin",
+      "permissionId": "products.delete"
+    },
+    {
+      "id": "role-admin::users.view",
+      "roleId": "role-admin",
+      "permissionId": "users.view"
+    },
+    {
+      "id": "role-admin::users.create",
+      "roleId": "role-admin",
+      "permissionId": "users.create"
+    },
+    {
+      "id": "role-admin::users.edit",
+      "roleId": "role-admin",
+      "permissionId": "users.edit"
+    },
+    {
+      "id": "role-admin::users.delete",
+      "roleId": "role-admin",
+      "permissionId": "users.delete"
+    },
+    {
+      "id": "role-admin::users.changeRole",
+      "roleId": "role-admin",
+      "permissionId": "users.changeRole"
+    },
+    {
+      "id": "role-admin::roles.view",
+      "roleId": "role-admin",
+      "permissionId": "roles.view"
+    },
+    {
+      "id": "role-admin::roles.create",
+      "roleId": "role-admin",
+      "permissionId": "roles.create"
+    },
+    {
+      "id": "role-admin::roles.edit",
+      "roleId": "role-admin",
+      "permissionId": "roles.edit"
+    },
+    {
+      "id": "role-admin::roles.delete",
+      "roleId": "role-admin",
+      "permissionId": "roles.delete"
+    },
+    {
+      "id": "role-admin::roles.assignPermissions",
+      "roleId": "role-admin",
+      "permissionId": "roles.assignPermissions"
+    },
+    {
+      "id": "role-editor::users.view",
+      "roleId": "role-editor",
+      "permissionId": "users.view"
+    },
+    {
+      "id": "role-editor::products.view",
+      "roleId": "role-editor",
+      "permissionId": "products.view"
+    },
+    {
+      "id": "role-editor::products.create",
+      "roleId": "role-editor",
+      "permissionId": "products.create"
+    },
+    {
+      "id": "role-editor::products.edit",
+      "roleId": "role-editor",
+      "permissionId": "products.edit"
+    },
+    {
+      "id": "role-editor::dashboard.view",
+      "roleId": "role-editor",
+      "permissionId": "dashboard.view"
+    },
+    {
+      "id": "role-viewer::products.view",
+      "roleId": "role-viewer",
+      "permissionId": "products.view"
+    },
+    {
+      "id": "role-viewer::dashboard.view",
+      "roleId": "role-viewer",
+      "permissionId": "dashboard.view"
+    }
+  ],
+  "userRoles": [
+    {
+      "id": "user-1::role-admin",
+      "userId": 1,
+      "roleId": "role-admin"
+    },
+    {
+      "id": "user-2::role-viewer",
+      "userId": 2,
+      "roleId": "role-viewer"
+    },
+    {
+      "id": "user-4::role-editor",
+      "userId": 4,
+      "roleId": "role-editor"
+    },
+    {
+      "id": "user-5::role-viewer",
+      "userId": 5,
+      "roleId": "role-viewer"
+    },
+    {
+      "id": "user-6::role-viewer",
+      "userId": 6,
+      "roleId": "role-viewer"
+    },
+    {
+      "id": "user-7::role-editor",
+      "userId": 7,
+      "roleId": "role-editor"
+    },
+    {
+      "id": "user-8::role-viewer",
+      "userId": 8,
+      "roleId": "role-viewer"
+    },
+    {
+      "id": "user-9::role-admin",
+      "userId": 9,
+      "roleId": "role-admin"
+    },
+    {
+      "id": "user-10::role-viewer",
+      "userId": 10,
+      "roleId": "role-viewer"
+    },
+    {
+      "id": "user-11::role-viewer",
+      "userId": 11,
+      "roleId": "role-viewer"
+    },
+    {
+      "id": "user-3-role-editor",
+      "userId": 3,
+      "roleId": "role-editor"
+    },
+    {
+      "id": "user-12-role-viewer",
+      "userId": 12,
+      "roleId": "role-viewer"
+    }
+  ]
 }

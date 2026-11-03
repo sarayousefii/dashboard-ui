@@ -1,9 +1,14 @@
-import EditUserForm from "@/features/users/components/edit-user-form";
+import { redirect } from 'next/navigation';
 
-export default function EditUserPage() {
-  return (
-    <div className="max-w-2xl mx-auto py-10">
-      <EditUserForm />;
-    </div>
-    )
+interface Props {
+  params: Promise<{
+    id: string;
+    locale: string;
+  }>;
+}
+
+export default async function EditUserPage({ params }: Props) {
+  const { id, locale } = await params;
+
+  redirect(`/${locale}/users/${id}`);
 }

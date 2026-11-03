@@ -1,11 +1,13 @@
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server';
 
-import {
-  errorResponse,
-  successResponse,
-} from "@/lib/api-response";
-import { fetchMockApi } from "@/shared/lib/mock-api";
-import type { User } from "@/features/users/types/user.types";
+import { errorResponse, successResponse } from '@/lib/api-response';
+
+import type { User } from '@/features/users/shared/types/user.types';
+
+import { fetchMockApi } from '@/shared/lib/mock-api';
+import { authorizeApiRequest } from '@/shared/lib/server-auth';
+
+import { syncLegacyUserRole } from '@/features/access-control/shared/services/user-role-sync.service';
 
 interface CreateUserPayload {
   firstName: string;
@@ -14,34 +16,43 @@ interface CreateUserPayload {
   age: number;
 }
 
-function isCreateUserPayload(
-  value: unknown,
-): value is CreateUserPayload {
-  if (!value || typeof value !== "object") {
+function isCreateUserPayload(value: unknown): value is CreateUserPayload {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return false;
   }
 
   const user = value as Record<string, unknown>;
 
+  const firstName =
+    typeof user.firstName === 'string' ? user.firstName.trim() : '';
+
+  const lastName =
+    typeof user.lastName === 'string' ? user.lastName.trim() : '';
+
+  const email = typeof user.email === 'string' ? user.email.trim() : '';
+
   return (
-    typeof user.firstName === "string" &&
-    user.firstName.trim().length >= 2 &&
-    typeof user.lastName === "string" &&
-    user.lastName.trim().length >= 2 &&
-    typeof user.email === "string" &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email) &&
-    typeof user.age === "number" &&
+    firstName.length >= 2 &&
+    lastName.length >= 2 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+    typeof user.age === 'number' &&
     Number.isInteger(user.age) &&
     user.age >= 18
   );
 }
 
 export async function GET(request: NextRequest) {
+  const authorization = await authorizeApiRequest(request, ['users.view']);
+
+  if (!authorization.authorized) {
+    return authorization.response;
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
 
-    const requestedLimit = Number(searchParams.get("limit") ?? 10);
-    const requestedSkip = Number(searchParams.get("skip") ?? 0);
+    const requestedLimit = Number(searchParams.get('limit') ?? 10);
+    const requestedSkip = Number(searchParams.get('skip') ?? 0);
 
     const limit =
       Number.isFinite(requestedLimit) && requestedLimit > 0
@@ -60,33 +71,31 @@ export async function GET(request: NextRequest) {
       _limit: String(limit),
     });
 
-    const search = searchParams.get("q");
-    const sortBy = searchParams.get("sortBy");
-    const order = searchParams.get("order");
+    const search = searchParams.get('q');
+    const sortBy = searchParams.get('sortBy');
+    const order = searchParams.get('order');
 
-    if (search) mockParams.set("q", search);
-    if (sortBy) mockParams.set("_sort", sortBy);
-
-    if (order === "asc" || order === "desc") {
-      mockParams.set("_order", order);
+    if (search) {
+      mockParams.set('q', search);
     }
 
-    const response = await fetchMockApi(
-      `/users?${mockParams.toString()}`,
-    );
+    if (sortBy) {
+      mockParams.set('_sort', sortBy);
+    }
+
+    if (order === 'asc' || order === 'desc') {
+      mockParams.set('_order', order);
+    }
+
+    const response = await fetchMockApi(`/users?${mockParams.toString()}`);
 
     if (!response.ok) {
-      return errorResponse(
-        "Failed to fetch users",
-        response.status,
-      );
+      return errorResponse('Failed to fetch users', response.status);
     }
 
     const users = (await response.json()) as User[];
 
-    const total = Number(
-      response.headers.get("X-Total-Count") ?? users.length,
-    );
+    const total = Number(response.headers.get('X-Total-Count') ?? users.length);
 
     return successResponse({
       users,
@@ -95,25 +104,28 @@ export async function GET(request: NextRequest) {
       limit,
     });
   } catch {
-    return errorResponse(
-      "Users service is unavailable",
-      503,
-    );
+    return errorResponse('Users service is unavailable', 503);
   }
 }
 
 export async function POST(request: NextRequest) {
+  const authorization = await authorizeApiRequest(request, ['users.create']);
+
+  if (!authorization.authorized) {
+    return authorization.response;
+  }
+
   try {
     let body: unknown;
 
     try {
       body = await request.json();
     } catch {
-      return errorResponse("Invalid request body", 400);
+      return errorResponse('Invalid request body', 400);
     }
 
     if (!isCreateUserPayload(body)) {
-      return errorResponse("Invalid user data", 400);
+      return errorResponse('Invalid user data', 400);
     }
 
     const email = body.email.trim().toLowerCase();
@@ -123,13 +135,13 @@ export async function POST(request: NextRequest) {
     );
 
     if (!duplicateResponse.ok) {
-      return errorResponse("Failed to validate user email", 502);
+      return errorResponse('Failed to validate user email', 502);
     }
 
     const duplicates = (await duplicateResponse.json()) as User[];
 
     if (duplicates.length > 0) {
-      return errorResponse("Email already exists", 409);
+      return errorResponse('Email already exists', 409);
     }
 
     const newUser = {
@@ -137,26 +149,37 @@ export async function POST(request: NextRequest) {
       lastName: body.lastName.trim(),
       email,
       age: body.age,
-      role: "viewer",
-      status: "active",
+      role: 'viewer' as const,
+      status: 'active' as const,
     };
 
-    const response = await fetchMockApi("/users", {
-      method: "POST",
+    const response = await fetchMockApi('/users', {
+      method: 'POST',
       body: JSON.stringify(newUser),
     });
 
     if (!response.ok) {
-      return errorResponse("Failed to create user", response.status);
+      return errorResponse('Failed to create user', response.status);
     }
 
     const createdUser = (await response.json()) as User;
 
-    return successResponse(createdUser, "", 201);
+    try {
+      await syncLegacyUserRole(createdUser.id, 'viewer');
+    } catch {
+      // Avoid leaving a newly created user without a role assignment.
+      await fetchMockApi(`/users/${createdUser.id}`, {
+        method: 'DELETE',
+      }).catch(() => undefined);
+
+      return errorResponse(
+        'Failed to assign the default role to the new user',
+        503,
+      );
+    }
+
+    return successResponse(createdUser, '', 201);
   } catch {
-    return errorResponse(
-      "Users service is unavailable",
-      503,
-    );
+    return errorResponse('Users service is unavailable', 503);
   }
 }
