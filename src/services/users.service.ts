@@ -1,5 +1,5 @@
-import { USER_ROLES, USER_STATUSES } from "@/features/users/types/user.types";
-import type { User } from "@/features/users/types/user.types";
+import { USER_ROLES, USER_STATUSES } from "@/features/users/shared/types/user.types";
+import type { User } from "@/features/users/shared/types/user.types";
 
 interface FetchUsersParams {
   limit?: number;

@@ -4,9 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateMyProfile } from "../api/profile.api";
 import { profileKeys } from "../api/profile.query-keys";
 
-import { usersKeys } from "@/features/users/api/users.query-keys";
+import { usersKeys } from "@/features/users/shared/api/users.query-keys";
 
-import type { User } from "@/features/users/types/user.types";
+import type { User } from "@/features/users/shared/types/user.types";
 
 interface CurrentUserResponse {
   user: (User & { name?: string }) | null;

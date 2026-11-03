@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import type { Metadata } from 'next';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
-import { PermissionGuard } from "@/features/auth/components/permission-guard";
-import { usersListQuery } from "@/features/users/api/users.query-options";
-import UsersPageView from "@/features/users/components/users-page-view";
-import { getQueryClient } from "@/shared/lib/react-query";
+import { PermissionGuard } from '@/features/auth/components/permission-guard';
+import { usersListQuery } from '@/features/users/view-users/api/users.query-options';
+import UsersPageView from '@/features/users/view-users/components/users-page-view';
+import { getQueryClient } from '@/shared/lib/react-query';
 
 export const metadata: Metadata = {
-  title: "Users",
-  description: "Manage users",
+  title: 'Users',
+  description: 'Manage users',
 };
 
 interface Props {
@@ -20,18 +20,16 @@ interface Props {
   }>;
 }
 
-export default async function UsersPage({
-  searchParams,
-}: Props) {
+export default async function UsersPage({ searchParams }: Props) {
   const params = await searchParams;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery(
     usersListQuery({
       page: Number(params.page) || 1,
-      search: params.search || "",
-      sortBy: params.sortBy || "",
-      order: params.order || "",
+      search: params.search || '',
+      sortBy: params.sortBy || '',
+      order: params.order || '',
     }),
   );
 

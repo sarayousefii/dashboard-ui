@@ -1,10 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-import { usePermission } from "../hooks/use-permission";
-
-import { hasPermission } from "@/shared/lib/permissions";
+import { usePermission } from '../hooks/use-permission';
 
 interface Props {
   permission: string;
@@ -17,14 +15,9 @@ export function PermissionGuard({
   children,
   fallback = null,
 }: Props) {
-  const { role } = usePermission();
+  const { canAccess } = usePermission();
 
-  const canAccess = hasPermission(
-    role,
-    permission
-  );
-
-  if (!canAccess) {
+  if (!canAccess(permission)) {
     return <>{fallback}</>;
   }
 
