@@ -2,22 +2,17 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 
-import {
-  Activity,
-  Cake,
-  Mail,
-  ShieldCheck,
-  UserRound,
-} from 'lucide-react';
+import { Activity, Cake, Mail, UserRound } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 
 import { useRouter } from '@/i18n/navigation';
 
+import { UserRolesSection } from '@/features/access-control/manage-user-roles/components/user-roles-section';
 import { useCurrentUser } from '@/features/auth/hooks/use-current-user';
 import { UserForm } from '@/features/users/shared/components/user-form';
 import { useUpdateUser } from '@/features/users/update-user/hooks/use-update-user';
@@ -46,8 +41,6 @@ export default function ProfilePage() {
   const userId = Number(params.id);
   const isValidId = Number.isInteger(userId) && userId > 0;
 
-  const locale = useLocale();
-
   const t = useTranslations('profile');
   const usersT = useTranslations('users');
 
@@ -66,6 +59,9 @@ export default function ProfilePage() {
   const canEditProfile =
     !!currentUser && (isSelf || hasPermission(currentUser, 'users.edit'));
 
+  const canManageRoles =
+    !!currentUser && hasPermission(currentUser, 'users.changeRole');
+
   const profileQuery = useProfileQuery({
     userId,
     isSelf,
@@ -82,26 +78,6 @@ export default function ProfilePage() {
   const user = profileQuery.data;
 
   const isSaving = isSelf ? updateMyProfile.isPending : updateUser.isPending;
-
-  const roleLabels =
-    user?.roles?.map((role) => {
-      switch (role.slug) {
-        case 'admin':
-          return usersT('roles.admin');
-
-        case 'editor':
-          return usersT('roles.editor');
-
-        case 'viewer':
-          return usersT('roles.viewer');
-
-        default:
-          return role.name;
-      }
-    }) ?? [];
-
-  const roleLabel =
-    roleLabels.join(locale === 'fa' ? '، ' : ', ') || '—';
 
   const startEditing = () => {
     setAvatarUrl(user?.avatarUrl ?? null);
@@ -239,59 +215,58 @@ export default function ProfilePage() {
           onDeleted={() => router.push('/users')}
         />
 
-        <Card className="w-full gap-4 overflow-hidden p-3 sm:gap-5 sm:p-5">
-          <ProfileSummary
-            user={user}
-            roleLabels={roleLabels}
-            roleTitle={t('fields.role')}
-            statusTitle={t('fields.status')}
-            status={status}
-            statusLabel={statusLabel}
-            statusStyles={statusStyles}
-          />
+        <ProfileSummary
+          user={user}
+          statusTitle={t('fields.status')}
+          status={status}
+          statusLabel={statusLabel}
+          statusStyles={statusStyles}
+        />
 
-          <ProfileDetails
-            title={t('title')}
-            fields={[
-              {
-                id: 'firstName',
-                icon: UserRound,
-                label: t('fields.firstName'),
-                value: user.firstName,
-              },
-              {
-                id: 'lastName',
-                icon: UserRound,
-                label: t('fields.lastName'),
-                value: user.lastName,
-              },
-              {
-                id: 'email',
-                icon: Mail,
-                label: t('fields.email'),
-                value: user.email,
-              },
-              {
-                id: 'age',
-                icon: Cake,
-                label: t('fields.age'),
-                value: String(user.age),
-              },
-              {
-                id: 'role',
-                icon: ShieldCheck,
-                label: t('fields.role'),
-                value: roleLabel,
-              },
-              {
-                id: 'status',
-                icon: Activity,
-                label: t('fields.status'),
-                value: statusLabel,
-              },
-            ]}
+        <div className="grid w-full min-w-0 grid-cols-1 items-stretch gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)]">
+          <Card className="flex h-full w-full min-w-0 flex-col gap-4 overflow-hidden p-3 sm:gap-5 sm:p-5">
+            <ProfileDetails
+              title={t('title')}
+              fields={[
+                {
+                  id: 'firstName',
+                  icon: UserRound,
+                  label: t('fields.firstName'),
+                  value: user.firstName,
+                },
+                {
+                  id: 'lastName',
+                  icon: UserRound,
+                  label: t('fields.lastName'),
+                  value: user.lastName,
+                },
+                {
+                  id: 'email',
+                  icon: Mail,
+                  label: t('fields.email'),
+                  value: user.email,
+                },
+                {
+                  id: 'age',
+                  icon: Cake,
+                  label: t('fields.age'),
+                  value: String(user.age),
+                },
+                {
+                  id: 'status',
+                  icon: Activity,
+                  label: t('fields.status'),
+                  value: statusLabel,
+                },
+              ]}
+            />
+          </Card>
+
+          <UserRolesSection
+            userId={userId}
+            canManageRoles={canManageRoles}
           />
-        </Card>
+        </div>
       </div>
     );
   }

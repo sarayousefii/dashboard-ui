@@ -2,20 +2,17 @@
 import Image from 'next/image';
 
 import {
-    Activity,
-    CheckCircle2,
-    CircleDashed,
-    Mail,
-    ShieldCheck,
-    UserRound,
+  Activity,
+  CheckCircle2,
+  CircleDashed,
+  Mail,
+  UserRound,
 } from 'lucide-react';
 
 import type { User } from '@/features/users/shared/types/user.types';
 
 interface ProfileSummaryProps {
   user: User;
-  roleLabels: string[];
-  roleTitle: string;
   statusTitle: string;
   statusLabel: string;
   statusStyles: string;
@@ -24,8 +21,6 @@ interface ProfileSummaryProps {
 
 export function ProfileSummary({
   user,
-  roleLabels,
-  roleTitle,
   statusTitle,
   statusLabel,
   statusStyles,
@@ -34,8 +29,6 @@ export function ProfileSummary({
   const initials =
     `${user.firstName?.trim().charAt(0) ?? ''}${user.lastName?.trim().charAt(0) ?? ''}`.toUpperCase();
 
-  const roles = user.roles ?? [];
-
   return (
     <section className="relative isolate overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 sm:p-5 lg:p-6">
       <div className="pointer-events-none absolute -start-10 -top-12 size-40 rounded-full bg-primary/10 blur-3xl" />
@@ -43,7 +36,6 @@ export function ProfileSummary({
       <div className="pointer-events-none absolute -end-10 -bottom-16 size-36 rounded-full bg-primary/10 blur-3xl" />
 
       <div className="relative grid min-w-0 grid-cols-1 gap-5 md:grid-cols-[minmax(0,1fr)_minmax(13rem,0.72fr)] md:items-center md:gap-6">
-        {/* Identity */}
         <div className="flex min-w-0 items-center gap-4 sm:gap-5">
           <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-primary/20 bg-background text-xl font-bold text-primary shadow-sm ring-4 ring-primary/5 sm:size-20 sm:text-2xl">
             {user.avatarUrl ? (
@@ -75,38 +67,7 @@ export function ProfileSummary({
           </div>
         </div>
 
-        {/* Account information */}
         <div className="grid min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-1">
-          {/* Roles */}
-          <div className="min-w-0 rounded-xl border border-border/70 bg-background/70 p-3 shadow-sm backdrop-blur-sm">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <ShieldCheck className="size-4 shrink-0 text-primary" />
-              <span>{roleTitle}</span>
-            </div>
-
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {roles.length > 0 ? (
-                roles.map((role, index) => (
-                  <span
-                    key={role.id}
-                    className="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-1.5 text-xs font-medium text-primary"
-                  >
-                    <ShieldCheck className="size-3.5 shrink-0" />
-
-                    <span className="break-words">
-                      {roleLabels[index] ?? role.name}
-                    </span>
-                  </span>
-                ))
-              ) : (
-                <span className="text-sm font-medium text-muted-foreground">
-                  —
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Account status */}
           <div className="min-w-0 rounded-xl border border-border/70 bg-background/70 p-3 shadow-sm backdrop-blur-sm">
             <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
               <Activity className="size-4 shrink-0 text-primary" />

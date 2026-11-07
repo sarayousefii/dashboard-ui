@@ -1,7 +1,8 @@
-﻿'use client';
+﻿
+'use client';
 
-import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { useState } from 'react';
 
 import {
   Eye,
@@ -24,11 +25,9 @@ import { Link } from '@/i18n/navigation';
 
 import { ConfirmDialog } from '@/shared/components/common/confirm-dialog';
 
-import { UserRolesDialog } from '@/features/access-control/manage-user-roles/components/user-roles-dialog';
-
 import { usePermission } from '@/features/auth/hooks/use-permission';
-import { useDeleteUser } from '@/features/users/delete-user/hooks/use-delete-user';
 import { useUpdateUserStatus } from '@/features/users/deactivate-user/hooks/use-update-user-status';
+import { useDeleteUser } from '@/features/users/delete-user/hooks/use-delete-user';
 
 import type { User } from '../types/user.types';
 
@@ -44,7 +43,6 @@ export function UserManagementActions({
   onDeleted,
 }: Props) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isRolesDialogOpen, setIsRolesDialogOpen] = useState(false);
 
   const locale = useLocale();
   const direction = locale === 'fa' ? 'rtl' : 'ltr';
@@ -64,7 +62,9 @@ export function UserManagementActions({
   const hasManagementPermission =
     canDeleteUser || canChangeRole || canEditUser;
 
-  if (context === 'profile' && !hasManagementPermission) {
+  const hasProfileActionPermission = canDeleteUser || canEditUser;
+
+  if (context === 'profile' && !hasProfileActionPermission) {
     return null;
   }
 
@@ -88,7 +88,7 @@ export function UserManagementActions({
               aria-label={t('open')}
               title={t('open')}
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
 
@@ -104,7 +104,7 @@ export function UserManagementActions({
                     href={`/users/${user.id}`}
                     className="flex w-full items-center"
                   >
-                    <Eye className="me-2 h-4 w-4 shrink-0" />
+                    <Eye className="me-2 size-4 shrink-0" />
                     <span>{t('view')}</span>
                   </Link>
                 </DropdownMenuItem>
@@ -113,20 +113,22 @@ export function UserManagementActions({
               </>
             )}
 
-            {canChangeRole && (
-              <DropdownMenuItem
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setIsRolesDialogOpen(true);
-                }}
-              >
-                <ShieldCheck className="me-2 h-4 w-4 shrink-0" />
-                <span>{t('manageRoles')}</span>
-              </DropdownMenuItem>
-            )}
+            {context === 'list' && canChangeRole && (
+              <>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/users/${user.id}`}
+                    className="flex w-full items-center"
+                  >
+                    <ShieldCheck className="me-2 size-4 shrink-0" />
+                    <span>{t('manageRoles')}</span>
+                  </Link>
+                </DropdownMenuItem>
 
-            {canChangeRole && canEditUser && (
-              <DropdownMenuSeparator />
+                {(canEditUser || canDeleteUser) && (
+                  <DropdownMenuSeparator />
+                )}
+              </>
             )}
 
             {canEditUser && (
@@ -139,7 +141,8 @@ export function UserManagementActions({
                   })
                 }
               >
-                <Power className="me-2 h-4 w-4 shrink-0" />
+                <Power className="me-2 size-4 shrink-0" />
+
                 <span>
                   {currentStatus === 'active'
                     ? t('deactivate')
@@ -150,13 +153,13 @@ export function UserManagementActions({
 
             {canDeleteUser && (
               <>
-                <DropdownMenuSeparator />
+                {canEditUser && <DropdownMenuSeparator />}
 
                 <DropdownMenuItem
                   onClick={() => setIsDeleteDialogOpen(true)}
                   className="text-destructive"
                 >
-                  <Trash2 className="me-2 h-4 w-4 shrink-0" />
+                  <Trash2 className="me-2 size-4 shrink-0" />
                   <span>{t('delete')}</span>
                 </DropdownMenuItem>
               </>
@@ -164,14 +167,6 @@ export function UserManagementActions({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {isRolesDialogOpen && (
-        <UserRolesDialog
-          open={isRolesDialogOpen}
-          onOpenChange={setIsRolesDialogOpen}
-          user={user}
-        />
-      )}
 
       <ConfirmDialog
         open={isDeleteDialogOpen}

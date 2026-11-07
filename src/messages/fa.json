@@ -193,7 +193,7 @@
     },
    "rolesManagement": {
       "title": "مدیریت نقش‌های کاربر",
-      "description": "مدیریت نقش‌های اختصاص‌یافته به {name}.",
+      "description": "مشاهده و مدیریت نقش‌های اختصاص‌یافته به این کاربر.",
       "loading": "در حال دریافت نقش‌ها...",
       "loadFailed": "دریافت اطلاعات نقش‌ها با خطا مواجه شد.",
       "retry": "تلاش مجدد",
@@ -222,7 +222,7 @@
       "selectedCount": "{count} مورد انتخاب شده",
       "selectRolesToRevoke": "نقش‌های موردنظر برای لغو را انتخاب کنید",
       "revokeMultipleTitle": "لغو نقش‌های انتخاب‌شده",
-      "revokeMultipleDescription": "آیا از لغو {count} نقش انتخاب‌شده از کاربر {name} اطمینان دارید؟",
+      "revokeMultipleDescription": "آیا از لغو {count} نقش انتخاب‌شده اطمینان دارید؟",
       "confirmRevokeSelected": "لغو نقش‌های انتخاب‌شده",
       "revokedMultiple": "{count} نقش با موفقیت لغو شد.",
       "revokePartialFailed": "{count} نقش لغو نشد. انتخاب‌ها را بررسی و دوباره تلاش کنید.",

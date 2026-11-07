@@ -193,7 +193,7 @@
     },
     "rolesManagement": {
       "title": "Manage User Roles",
-      "description": "Manage assigned roles for {name}.",
+      "description": "View and manage the roles assigned to this user.",
       "loading": "Loading roles...",
       "loadFailed": "Failed to load role information.",
       "retry": "Try again",
@@ -222,7 +222,7 @@
       "selectedCount": "{count} selected",
       "selectRolesToRevoke": "Select assigned roles to revoke",
       "revokeMultipleTitle": "Revoke selected roles",
-      "revokeMultipleDescription": "Are you sure you want to revoke {count} selected roles from {name}?",
+      "revokeMultipleDescription": "Are you sure you want to revoke {count, plural, one {# selected role} other {# selected roles}}?",
       "confirmRevokeSelected": "Revoke selected roles",
       "revokedMultiple": "{count} roles revoked successfully.",
       "revokePartialFailed": "{count} roles could not be revoked. Please review your selection and try again.",
