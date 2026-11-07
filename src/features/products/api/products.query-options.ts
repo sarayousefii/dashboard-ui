@@ -1,25 +1,30 @@
-import { queryOptions, keepPreviousData } from "@tanstack/react-query";
-import { getProducts, getProductById } from "./products.api";
-import { productsKeys } from "./products.query-keys";
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
-export function productsListQuery(params: {
-  page: number;
-  search: string;
-  sortBy?: string;
-  order?: string;
-}) {
-  const limit = 10;
+import {
+  DEFAULT_PAGE_SIZE,
+  normalizePageSize,
+} from '@/shared/constants/pagination';
+
+import type { GetProductsParams } from '../types/product.types';
+
+import { getProductById, getProducts } from './products.api';
+import { productsKeys } from './products.query-keys';
+
+export function productsListQuery(params: GetProductsParams) {
+  const normalizedParams: GetProductsParams = {
+    ...params,
+    page: Math.max(1, Number(params.page ?? 1)),
+    limit: normalizePageSize(
+      params.limit ?? DEFAULT_PAGE_SIZE,
+    ),
+  };
 
   return queryOptions({
-    queryKey: productsKeys.list(params),
+    queryKey: productsKeys.list(normalizedParams),
 
-    queryFn: () =>
-      getProducts({
-        ...params,
-        limit,
-      }),
+    queryFn: () => getProducts(normalizedParams),
 
-    staleTime: 1000 * 60 * 2, // 2 min cache
+    staleTime: 1000 * 60 * 2,
 
     placeholderData: keepPreviousData,
   });

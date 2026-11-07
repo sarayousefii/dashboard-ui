@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Plus, UserRoundPlus, Users, X } from 'lucide-react';
@@ -23,14 +22,15 @@ import CreateUserForm from '@/features/users/create-user/components/create-user-
 import { DataTable } from '@/shared/components/common/data-table';
 import { EmptyState } from '@/shared/components/common/empty-state';
 import { ErrorState } from '@/shared/components/common/error-state';
+import { Pagination } from '@/shared/components/common/pagination';
 import { TableSkeleton } from '@/shared/components/common/table-skeleton';
 import { DashboardLayout } from '@/shared/components/layout/dashboard-layout';
+
 import { getErrorMessage } from '@/shared/lib/api-error';
 
 import { useUsersView } from '../hooks/use-users-view';
 import { createUserColumns } from './users-columns';
 import { UsersFilters } from './users-filters';
-import { UsersPagination } from './users-pagination';
 
 export default function UsersPageView() {
   const t = useTranslations('users');
@@ -45,18 +45,24 @@ export default function UsersPageView() {
     isLoading,
     error,
     page,
+    pageSize,
     search,
     sortBy,
     order,
     setPage,
+    setPageSize,
     setSearch,
     setSortBy,
     setOrder,
   } = useUsersView();
 
   const users = data?.data?.users ?? [];
+  const total = data?.data?.total ?? 0;
 
-  const columns = useMemo(() => createUserColumns((key) => t(key)), [t]);
+  const columns = useMemo(
+    () => createUserColumns((key) => t(key)),
+    [t],
+  );
 
   let tableContent;
 
@@ -73,17 +79,13 @@ export default function UsersPageView() {
     tableContent = <EmptyState title={t('states.empty')} />;
   } else {
     tableContent = (
-      <div className="space-y-3">
-        <DataTable
-          columns={columns}
-          data={users}
-          onRowClick={(user) => {
-            router.push(`/users/${user.id}`);
-          }}
-        />
-
-        <UsersPagination page={page} setPage={setPage} />
-      </div>
+      <DataTable
+        columns={columns}
+        data={users}
+        onRowClick={(user) => {
+          router.push(`/users/${user.id}`);
+        }}
+      />
     );
   }
 
@@ -127,8 +129,20 @@ export default function UsersPageView() {
           onOrderChange={setOrder}
         />
 
-        {/* Table content */}
-        {tableContent}
+        {/* Table and pagination */}
+        <div className="space-y-3">
+          {tableContent}
+
+          {data && !isLoading && !error && (
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
+          )}
+        </div>
       </div>
 
       {/* Create user dialog */}

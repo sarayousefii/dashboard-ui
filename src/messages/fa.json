@@ -282,5 +282,16 @@
       "imageTooLarge": "حجم تصویر پس از فشرده‌سازی همچنان زیاد است. تصویر دیگری انتخاب کنید.",
       "processingFailed": "پردازش تصویر انجام نشد. لطفاً دوباره تلاش کنید."
     }
+  },
+  "pagination": {
+    "navigation": "صفحه‌بندی",
+    "rowsPerPage": "تعداد ردیف در هر صفحه",
+    "showing": "نمایش {start} تا {end} از {total}",
+    "page": "صفحه {page} از {totalPages}",
+    "first": "صفحه اول",
+    "previous": "قبلی",
+    "next": "بعدی",
+    "last": "صفحه آخر",
+    "goToPage": "رفتن به صفحه {page}"
   }
 }

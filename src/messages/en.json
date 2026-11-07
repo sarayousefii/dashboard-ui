@@ -282,5 +282,16 @@
       "imageTooLarge": "The image is still too large after compression. Try another image.",
       "processingFailed": "Unable to process the selected image. Please try again."
     }
+  },
+  "pagination": {
+    "navigation": "Pagination",
+    "rowsPerPage": "Rows per page",
+    "showing": "Showing {start}–{end} of {total}",
+    "page": "Page {page} of {totalPages}",
+    "first": "First page",
+    "previous": "Previous",
+    "next": "Next",
+    "last": "Last page",
+    "goToPage": "Go to page {page}"
   }
 }
