@@ -1,12 +1,14 @@
+
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Plus, UserRoundPlus, Users, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Plus, Users } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -88,9 +90,10 @@ export default function UsersPageView() {
   return (
     <DashboardLayout>
       <div className="mx-auto w-full max-w-6xl space-y-5">
+        {/* Page header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Users className="size-5" />
             </div>
 
@@ -106,6 +109,7 @@ export default function UsersPageView() {
               type="button"
               size="sm"
               onClick={() => setIsCreateDialogOpen(true)}
+              className="rounded-lg shadow-sm"
             >
               <Plus className="size-4" />
               {t('create')}
@@ -113,6 +117,7 @@ export default function UsersPageView() {
           )}
         </div>
 
+        {/* Filters */}
         <UsersFilters
           search={search}
           sortBy={sortBy}
@@ -122,23 +127,60 @@ export default function UsersPageView() {
           onOrderChange={setOrder}
         />
 
+        {/* Table content */}
         {tableContent}
       </div>
 
+      {/* Create user dialog */}
       {canCreateUser && (
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
-            <DialogHeader>
-              <DialogTitle className="sr-only">
-                {t('form.createTitle')}
-              </DialogTitle>
+        <Dialog
+          open={isCreateDialogOpen}
+          onOpenChange={setIsCreateDialogOpen}
+        >
+          <DialogContent
+            showCloseButton={false}
+            className="flex max-h-[90vh] w-[calc(100%-2rem)] flex-col gap-0 overflow-y-auto rounded-2xl border-border bg-card p-0 shadow-2xl sm:max-w-[38rem]"
+          >
+            <DialogHeader className="shrink-0 border-b border-border bg-muted/30 px-6 py-4 text-start pe-0 sm:px-7">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <UserRoundPlus className="size-4" />
+                  </div>
 
-              <DialogDescription className="sr-only">
-                {t('form.manageDescription')}
-              </DialogDescription>
+                  <div className="min-w-0 space-y-0.5">
+                    <DialogTitle className="text-sm font-semibold leading-5 text-foreground">
+                      {t('form.createTitle')}
+                    </DialogTitle>
+
+                    <DialogDescription className="text-[11px] leading-4 text-muted-foreground">
+                      {t('form.manageDescription')}
+                    </DialogDescription>
+                  </div>
+                </div>
+
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Close dialog"
+                    title="Close"
+                    className="size-8 shrink-0 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    <X className="size-4" />
+                    <span className="sr-only">Close dialog</span>
+                  </Button>
+                </DialogClose>
+              </div>
             </DialogHeader>
 
-            <CreateUserForm onCreated={() => setIsCreateDialogOpen(false)} />
+            <div className="mt-6 min-w-0">
+              <CreateUserForm
+                variant="dialog"
+                onCreated={() => setIsCreateDialogOpen(false)}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       )}

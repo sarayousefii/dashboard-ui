@@ -1,6 +1,11 @@
-import { NextRequest } from 'next/server';
+﻿import { NextRequest } from 'next/server';
 
 import { errorResponse, successResponse } from '@/lib/api-response';
+
+import type {
+  Role,
+  UserRoleAssignment,
+} from '@/features/access-control/shared/types/access-control.types';
 
 import type { User } from '@/features/users/shared/types/user.types';
 
@@ -39,6 +44,18 @@ function isCreateUserPayload(value: unknown): value is CreateUserPayload {
     Number.isInteger(user.age) &&
     user.age >= 18
   );
+}
+
+async function getCollection<T>(path: string): Promise<T[] | null> {
+  const response = await fetchMockApi(path);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data: unknown = await response.json();
+
+  return Array.isArray(data) ? (data as T[]) : null;
 }
 
 export async function GET(request: NextRequest) {
@@ -97,8 +114,47 @@ export async function GET(request: NextRequest) {
 
     const total = Number(response.headers.get('X-Total-Count') ?? users.length);
 
+    const [roles, assignments] = await Promise.all([
+      getCollection<Role>('/roles'),
+      getCollection<UserRoleAssignment>('/userRoles'),
+    ]);
+
+    if (!roles || !assignments) {
+      return errorResponse('Failed to retrieve user role information', 503);
+    }
+
+    const rolesById = new Map(
+      roles.map((role) => [String(role.id), role]),
+    );
+
+    const roleIdsByUserId = new Map<number, Set<string>>();
+
+    for (const assignment of assignments) {
+      const userId = Number(assignment.userId);
+      const roleId = String(assignment.roleId);
+
+      const userRoleIds = roleIdsByUserId.get(userId) ?? new Set<string>();
+
+      userRoleIds.add(roleId);
+      roleIdsByUserId.set(userId, userRoleIds);
+    }
+
+    const usersWithRoles: User[] = users.map((user) => {
+      const assignedRoleIds =
+        roleIdsByUserId.get(Number(user.id)) ?? new Set<string>();
+
+      const assignedRoles = Array.from(assignedRoleIds)
+        .map((roleId) => rolesById.get(roleId))
+        .filter((role): role is Role => role !== undefined);
+
+      return {
+        ...user,
+        roles: assignedRoles,
+      };
+    });
+
     return successResponse({
-      users,
+      users: usersWithRoles,
       total,
       skip,
       limit,
@@ -167,7 +223,6 @@ export async function POST(request: NextRequest) {
     try {
       await syncLegacyUserRole(createdUser.id, 'viewer');
     } catch {
-      // Avoid leaving a newly created user without a role assignment.
       await fetchMockApi(`/users/${createdUser.id}`, {
         method: 'DELETE',
       }).catch(() => undefined);

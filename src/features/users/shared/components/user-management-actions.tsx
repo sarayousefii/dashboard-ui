@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -7,9 +7,8 @@ import {
   Eye,
   MoreHorizontal,
   Power,
-  Shield,
+  ShieldCheck,
   Trash2,
-  UserCog,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -25,12 +24,13 @@ import { Link } from '@/i18n/navigation';
 
 import { ConfirmDialog } from '@/shared/components/common/confirm-dialog';
 
+import { UserRolesDialog } from '@/features/access-control/manage-user-roles/components/user-roles-dialog';
+
 import { usePermission } from '@/features/auth/hooks/use-permission';
 import { useDeleteUser } from '@/features/users/delete-user/hooks/use-delete-user';
 import { useUpdateUserStatus } from '@/features/users/deactivate-user/hooks/use-update-user-status';
-import { useUpdateUserRole } from '@/features/users/update-user/hooks/use-update-user-role';
 
-import type { User, UserRole } from '../types/user.types';
+import type { User } from '../types/user.types';
 
 interface Props {
   user: User;
@@ -43,7 +43,8 @@ export function UserManagementActions({
   context = 'list',
   onDeleted,
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRolesDialogOpen, setIsRolesDialogOpen] = useState(false);
 
   const locale = useLocale();
   const direction = locale === 'fa' ? 'rtl' : 'ltr';
@@ -55,14 +56,13 @@ export function UserManagementActions({
   const { mutate: updateStatus, isPending: isUpdatingStatus } =
     useUpdateUserStatus();
 
-  const { mutate: updateRole, isPending: isUpdatingRole } = useUpdateUserRole();
-
   const { canDeleteUser, canChangeRole, canEditUser } = usePermission();
 
   const currentStatus = user.status ?? 'active';
   const nextStatus = currentStatus === 'active' ? 'inactive' : 'active';
 
-  const hasManagementPermission = canDeleteUser || canChangeRole || canEditUser;
+  const hasManagementPermission =
+    canDeleteUser || canChangeRole || canEditUser;
 
   if (context === 'profile' && !hasManagementPermission) {
     return null;
@@ -71,14 +71,14 @@ export function UserManagementActions({
   const handleDelete = () => {
     deleteUser(user.id, {
       onSuccess: () => {
-        setOpen(false);
+        setIsDeleteDialogOpen(false);
         onDeleted?.();
       },
     });
   };
 
   return (
-    <>
+    <div onClick={(event) => event.stopPropagation()}>
       <div className="flex justify-center">
         <DropdownMenu dir={direction}>
           <DropdownMenuTrigger asChild>
@@ -114,48 +114,19 @@ export function UserManagementActions({
             )}
 
             {canChangeRole && (
-              <>
-                <DropdownMenuItem
-                  disabled={isUpdatingRole || user.role === 'admin'}
-                  onClick={() =>
-                    updateRole({
-                      id: user.id,
-                      role: 'admin' as UserRole,
-                    })
-                  }
-                >
-                  <Shield className="me-2 h-4 w-4 shrink-0" />
-                  <span>{t('makeAdmin')}</span>
-                </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIsRolesDialogOpen(true);
+                }}
+              >
+                <ShieldCheck className="me-2 h-4 w-4 shrink-0" />
+                <span>{t('manageRoles')}</span>
+              </DropdownMenuItem>
+            )}
 
-                <DropdownMenuItem
-                  disabled={isUpdatingRole || user.role === 'editor'}
-                  onClick={() =>
-                    updateRole({
-                      id: user.id,
-                      role: 'editor' as UserRole,
-                    })
-                  }
-                >
-                  <UserCog className="me-2 h-4 w-4 shrink-0" />
-                  <span>{t('makeEditor')}</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  disabled={isUpdatingRole || user.role === 'viewer'}
-                  onClick={() =>
-                    updateRole({
-                      id: user.id,
-                      role: 'viewer' as UserRole,
-                    })
-                  }
-                >
-                  <UserCog className="me-2 h-4 w-4 shrink-0" />
-                  <span>{t('makeViewer')}</span>
-                </DropdownMenuItem>
-
-                {canEditUser && <DropdownMenuSeparator />}
-              </>
+            {canChangeRole && canEditUser && (
+              <DropdownMenuSeparator />
             )}
 
             {canEditUser && (
@@ -170,7 +141,9 @@ export function UserManagementActions({
               >
                 <Power className="me-2 h-4 w-4 shrink-0" />
                 <span>
-                  {currentStatus === 'active' ? t('deactivate') : t('activate')}
+                  {currentStatus === 'active'
+                    ? t('deactivate')
+                    : t('activate')}
                 </span>
               </DropdownMenuItem>
             )}
@@ -180,7 +153,7 @@ export function UserManagementActions({
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                  onClick={() => setOpen(true)}
+                  onClick={() => setIsDeleteDialogOpen(true)}
                   className="text-destructive"
                 >
                   <Trash2 className="me-2 h-4 w-4 shrink-0" />
@@ -192,9 +165,17 @@ export function UserManagementActions({
         </DropdownMenu>
       </div>
 
+      {isRolesDialogOpen && (
+        <UserRolesDialog
+          open={isRolesDialogOpen}
+          onOpenChange={setIsRolesDialogOpen}
+          user={user}
+        />
+      )}
+
       <ConfirmDialog
-        open={open}
-        onOpenChange={setOpen}
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
         title={t('deleteTitle')}
         description={t('deleteDescription', {
           name: user.firstName,
@@ -203,6 +184,6 @@ export function UserManagementActions({
         loading={isDeleting}
         onConfirm={handleDelete}
       />
-    </>
+    </div>
   );
 }

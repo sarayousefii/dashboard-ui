@@ -1,3 +1,4 @@
+
 'use client';
 
 import { LayoutDashboard } from 'lucide-react';
@@ -13,8 +14,12 @@ export function Sidebar() {
   const t = useTranslations('navigation');
 
   const isSidebarOpen = useUIStore((state) => state.isSidebarOpen);
-  const isMobileSidebarOpen = useUIStore((state) => state.isMobileSidebarOpen);
-  const setMobileSidebar = useUIStore((state) => state.setMobileSidebar);
+  const isMobileSidebarOpen = useUIStore(
+    (state) => state.isMobileSidebarOpen,
+  );
+  const setMobileSidebar = useUIStore(
+    (state) => state.setMobileSidebar,
+  );
 
   const { canAccess } = usePermission();
 
@@ -42,8 +47,8 @@ export function Sidebar() {
             transition-colors duration-150
             ${
               isActive
-                ? 'bg-[#3B4D45] text-white before:absolute before:inset-y-2 before:start-0 before:w-[3px] before:rounded-e-full before:bg-emerald-400'
-                : 'text-slate-300 hover:bg-white/[0.06] hover:text-white'
+                ? 'bg-sidebar-accent text-sidebar-accent-foreground before:absolute before:inset-y-2 before:start-0 before:w-[3px] before:rounded-e-full before:bg-sidebar-primary'
+                : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground'
             }
           `}
         >
@@ -52,8 +57,8 @@ export function Sidebar() {
               size-[17px] shrink-0 transition-colors
               ${
                 isActive
-                  ? 'text-emerald-300'
-                  : 'text-slate-400 group-hover:text-slate-200'
+                  ? 'text-sidebar-primary'
+                  : 'text-sidebar-foreground/60 group-hover:text-sidebar-accent-foreground'
               }
             `}
           />
@@ -65,12 +70,12 @@ export function Sidebar() {
 
   const sidebarContent = (
     <>
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/[0.08] px-5">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300">
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-sidebar-border px-5">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary/15 text-sidebar-primary">
           <LayoutDashboard className="size-[17px]" />
         </div>
 
-        <h2 className="truncate text-sm font-semibold tracking-tight text-white">
+        <h2 className="truncate text-sm font-semibold tracking-tight text-sidebar-foreground">
           Dashboard UI
         </h2>
       </div>
@@ -87,7 +92,7 @@ export function Sidebar() {
       <aside
         className={
           isSidebarOpen
-            ? 'hidden h-svh w-[248px] shrink-0 flex-col bg-[#27332F] text-slate-100 md:sticky md:top-0 md:flex'
+            ? 'hidden h-svh w-[248px] shrink-0 flex-col bg-sidebar text-sidebar-foreground md:sticky md:top-0 md:flex'
             : 'hidden'
         }
       >
@@ -104,7 +109,7 @@ export function Sidebar() {
             className="fixed inset-0 z-40 cursor-default bg-black/45 backdrop-blur-[1px] md:hidden"
           />
 
-          <aside className="fixed inset-y-0 start-0 z-50 flex h-svh w-[min(18rem,85vw)] flex-col bg-[#27332F] text-slate-100 shadow-xl md:hidden">
+          <aside className="fixed inset-y-0 start-0 z-50 flex h-svh w-[min(18rem,85vw)] flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden">
             {sidebarContent}
           </aside>
         </>

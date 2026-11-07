@@ -16,13 +16,20 @@ export interface User {
   email: string;
   age: number;
 
-  // Legacy role: retained during migration and for compatibility.
+  /**
+   * Profile image stored as an optimized WebP Data URL.
+   * Null means the user has no profile image.
+   */
+  avatarUrl?: string | null;
+
+  /**
+   * Legacy role field retained for backward compatibility.
+   * Dynamic role assignments are represented by roles.
+   */
   role: UserRole;
 
-  // Dynamic RBAC data returned by the auth API.
   roles?: Role[];
   permissions?: PermissionKey[];
-
   status?: UserStatus;
 }
 

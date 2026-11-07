@@ -1,8 +1,13 @@
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* ========================================
+   Dracula Light Theme
+======================================== */
 
 :root {
   color-scheme: light;
@@ -11,100 +16,119 @@
   --font-heading: "Inter", "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
 
   /* Main surfaces */
-  --background: oklch(0.977 0.005 165);
-  --foreground: oklch(0.25 0.018 165);
+  --background: #f8f8f2;
+  --foreground: #282a36;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0.018 165);
+  --card: #ffffff;
+  --card-foreground: #282a36;
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.018 165);
+  --popover: #ffffff;
+  --popover-foreground: #282a36;
 
-  /* Graphite + Emerald brand */
-  --primary: oklch(0.55 0.13 165);
-  --primary-foreground: oklch(0.99 0.003 165);
+  /* Dracula Purple */
+  --primary: #7952b3;
+  --primary-foreground: #ffffff;
 
-  --secondary: oklch(0.95 0.012 165);
-  --secondary-foreground: oklch(0.31 0.025 165);
+  /* Secondary */
+  --secondary: #eae7f2;
+  --secondary-foreground: #343746;
 
-  --accent: oklch(0.94 0.025 165);
-  --accent-foreground: oklch(0.39 0.09 165);
+  /* Accent */
+  --accent: #eee8f8;
+  --accent-foreground: #6541a5;
 
-  /* Neutral text and borders */
-  --muted: oklch(0.955 0.006 165);
-  --muted-foreground: oklch(0.53 0.018 165);
+  /* Neutral */
+  --muted: #f0eef6;
+  --muted-foreground: #6272a4;
 
-  --border: oklch(0.91 0.009 165);
-  --input: oklch(0.89 0.012 165);
-  --ring: oklch(0.63 0.12 165);
+  --border: #ded9e9;
+  --input: #d5d0e2;
+  --ring: #9575cd;
 
-  --destructive: oklch(0.56 0.22 27);
+  /* Status */
+  --destructive: #d94358;
 
   /* Charts */
-  --chart-1: oklch(0.57 0.13 165);
-  --chart-2: oklch(0.62 0.12 220);
-  --chart-3: oklch(0.7 0.14 75);
-  --chart-4: oklch(0.62 0.16 310);
-  --chart-5: oklch(0.65 0.17 30);
+  --chart-1: #8b63c9;
+  --chart-2: #168ba5;
+  --chart-3: #27945d;
+  --chart-4: #ca5b9b;
+  --chart-5: #c77d36;
 
   /* Sidebar */
-  --sidebar: oklch(0.23 0.018 165);
-  --sidebar-foreground: oklch(0.94 0.008 165);
-  --sidebar-primary: oklch(0.72 0.13 165);
-  --sidebar-primary-foreground: oklch(0.19 0.02 165);
-  --sidebar-accent: oklch(0.3 0.022 165);
-  --sidebar-accent-foreground: oklch(0.97 0.005 165);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.72 0.13 165);
+  --sidebar: #f0eef6;
+  --sidebar-foreground: #282a36;
+  --sidebar-primary: #7952b3;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e5def2;
+  --sidebar-accent-foreground: #6541a5;
+  --sidebar-border: #ded9e9;
+  --sidebar-ring: #9575cd;
 
   --radius: 0.625rem;
 }
 
+/* ========================================
+   Dracula Dark Theme
+======================================== */
+
 .dark {
   color-scheme: dark;
 
-  --background: oklch(0.17 0.012 165);
-  --foreground: oklch(0.94 0.008 165);
+  /* Main surfaces */
+  --background: #282a36;
+  --foreground: #f8f8f2;
 
-  --card: oklch(0.205 0.015 165);
-  --card-foreground: oklch(0.94 0.008 165);
+  --card: #2d303e;
+  --card-foreground: #f8f8f2;
 
-  --popover: oklch(0.22 0.018 165);
-  --popover-foreground: oklch(0.94 0.008 165);
+  --popover: #343746;
+  --popover-foreground: #f8f8f2;
 
-  --primary: oklch(0.69 0.13 165);
-  --primary-foreground: oklch(0.17 0.02 165);
+  /* Dracula Purple */
+  --primary: #bd93f9;
+  --primary-foreground: #282a36;
 
-  --secondary: oklch(0.26 0.015 165);
-  --secondary-foreground: oklch(0.92 0.008 165);
+  /* Secondary */
+  --secondary: #44475a;
+  --secondary-foreground: #f8f8f2;
 
-  --accent: oklch(0.28 0.025 165);
-  --accent-foreground: oklch(0.85 0.08 165);
+  /* Accent */
+  --accent: #3b3e50;
+  --accent-foreground: #8be9fd;
 
-  --muted: oklch(0.255 0.012 165);
-  --muted-foreground: oklch(0.7 0.015 165);
+  /* Neutral */
+  --muted: #343746;
+  --muted-foreground: #b0b3c5;
 
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.69 0.13 165);
+  --border: #44475a;
+  --input: #51546a;
+  --ring: #bd93f9;
 
-  --destructive: oklch(0.68 0.19 25);
+  /* Status */
+  --destructive: #ff5555;
 
-  --chart-1: oklch(0.7 0.13 165);
-  --chart-2: oklch(0.72 0.12 220);
-  --chart-3: oklch(0.78 0.14 75);
-  --chart-4: oklch(0.72 0.16 310);
-  --chart-5: oklch(0.72 0.17 30);
+  /* Charts */
+  --chart-1: #bd93f9;
+  --chart-2: #8be9fd;
+  --chart-3: #50fa7b;
+  --chart-4: #ff79c6;
+  --chart-5: #ffb86c;
 
-  --sidebar: oklch(0.19 0.014 165);
-  --sidebar-foreground: oklch(0.94 0.008 165);
-  --sidebar-primary: oklch(0.73 0.13 165);
-  --sidebar-primary-foreground: oklch(0.17 0.02 165);
-  --sidebar-accent: oklch(0.27 0.018 165);
-  --sidebar-accent-foreground: oklch(0.96 0.005 165);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.73 0.13 165);
+  /* Sidebar */
+  --sidebar: #21222c;
+  --sidebar-foreground: #f8f8f2;
+  --sidebar-primary: #bd93f9;
+  --sidebar-primary-foreground: #282a36;
+  --sidebar-accent: #343746;
+  --sidebar-accent-foreground: #8be9fd;
+  --sidebar-border: #44475a;
+  --sidebar-ring: #bd93f9;
 }
+
+/* ========================================
+   Tailwind Theme Tokens
+======================================== */
 
 @theme inline {
   --font-sans: "Inter", "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
@@ -160,6 +184,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ========================================
+   Base Styles
+======================================== */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -189,16 +217,27 @@
     font: inherit;
   }
 
+  /* Text selection */
   ::selection {
-    background: oklch(0.75 0.1 165 / 35%);
+    background: #bd93f959;
+    color: #282a36;
+  }
+
+  .dark ::selection {
+    background: #bd93f9;
+    color: #282a36;
   }
 }
 
+/* ========================================
+   Scrollbars
+======================================== */
+
 * {
   scrollbar-width: thin;
-  scrollbar-color: oklch(0.7 0.025 165 / 45%) transparent;
+  scrollbar-color: #c5b8df transparent;
 }
 
 .dark * {
-  scrollbar-color: oklch(0.55 0.025 165 / 45%) transparent;
+  scrollbar-color: #6272a4 transparent;
 }

@@ -1,4 +1,7 @@
+
 'use client';
+
+import Image from 'next/image';
 
 import { ChevronDown, LogOut, Menu, UserRound } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -29,7 +32,9 @@ export function Navbar() {
   const t = useTranslations('navbar');
 
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
-  const toggleMobileSidebar = useUIStore((state) => state.toggleMobileSidebar);
+  const toggleMobileSidebar = useUIStore(
+    (state) => state.toggleMobileSidebar,
+  );
 
   const handleSidebarToggle = () => {
     if (window.matchMedia('(max-width: 767px)').matches) {
@@ -125,8 +130,19 @@ export function Navbar() {
               aria-label={user?.name ?? 'User menu'}
               className="group flex items-center gap-1 rounded-md p-0.5 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <span className="flex size-8 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground">
-                {avatarInitial}
+              <span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md bg-primary text-xs font-semibold text-primary-foreground">
+                {user?.avatarUrl ? (
+                  <Image
+                    src={user.avatarUrl}
+                    alt={user.name ?? 'Profile'}
+                    width={32}
+                    height={32}
+                    unoptimized
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  avatarInitial
+                )}
               </span>
 
               <ChevronDown className="hidden size-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 sm:block" />

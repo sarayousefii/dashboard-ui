@@ -1,3 +1,4 @@
+﻿
 import { NextRequest } from 'next/server';
 
 import { errorResponse, successResponse } from '@/lib/api-response';
@@ -8,6 +9,11 @@ import {
   type User,
 } from '@/features/users/shared/types/user.types';
 
+import type {
+  Role,
+  UserRoleAssignment,
+} from '@/features/access-control/shared/types/access-control.types';
+
 import { fetchMockApi } from '@/shared/lib/mock-api';
 
 import {
@@ -17,11 +23,15 @@ import {
 
 import { syncLegacyUserRole } from '@/features/access-control/shared/services/user-role-sync.service';
 
+import { isValidAvatarValue } from '@/shared/lib/avatar';
+
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-async function getValidUserId(context: RouteContext): Promise<number | null> {
+async function getValidUserId(
+  context: RouteContext,
+): Promise<number | null> {
   const { id } = await context.params;
   const userId = Number(id);
 
@@ -32,8 +42,51 @@ async function getValidUserId(context: RouteContext): Promise<number | null> {
   return userId;
 }
 
+async function getCollection<T>(
+  path: string,
+): Promise<T[] | null> {
+  const response = await fetchMockApi(path);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data: unknown = await response.json();
+
+  return Array.isArray(data) ? (data as T[]) : null;
+}
+
+async function getUserRoles(
+  userId: number,
+): Promise<Role[] | null> {
+  const [roles, assignments] = await Promise.all([
+    getCollection<Role>('/roles'),
+    getCollection<UserRoleAssignment>('/userRoles'),
+  ]);
+
+  if (!roles || !assignments) {
+    return null;
+  }
+
+  const assignedRoleIds = new Set(
+    assignments
+      .filter(
+        (assignment) => Number(assignment.userId) === userId,
+      )
+      .map((assignment) => String(assignment.roleId)),
+  );
+
+  return roles.filter((role) =>
+    assignedRoleIds.has(String(role.id)),
+  );
+}
+
 function parseUserPatch(value: unknown): Partial<User> | null {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+  if (
+    !value ||
+    typeof value !== 'object' ||
+    Array.isArray(value)
+  ) {
     return null;
   }
 
@@ -46,11 +99,15 @@ function parseUserPatch(value: unknown): Partial<User> | null {
     'age',
     'role',
     'status',
+    'avatarUrl',
   ];
 
   const keys = Object.keys(body);
 
-  if (keys.length === 0 || keys.some((key) => !allowedFields.includes(key))) {
+  if (
+    keys.length === 0 ||
+    keys.some((key) => !allowedFields.includes(key))
+  ) {
     return null;
   }
 
@@ -68,7 +125,10 @@ function parseUserPatch(value: unknown): Partial<User> | null {
   }
 
   if ('lastName' in body) {
-    if (typeof body.lastName !== 'string' || body.lastName.trim().length < 2) {
+    if (
+      typeof body.lastName !== 'string' ||
+      body.lastName.trim().length < 2
+    ) {
       return null;
     }
 
@@ -78,7 +138,9 @@ function parseUserPatch(value: unknown): Partial<User> | null {
   if ('email' in body) {
     if (
       typeof body.email !== 'string' ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        body.email.trim(),
+      )
     ) {
       return null;
     }
@@ -101,7 +163,9 @@ function parseUserPatch(value: unknown): Partial<User> | null {
   if ('role' in body) {
     if (
       typeof body.role !== 'string' ||
-      !USER_ROLES.includes(body.role as (typeof USER_ROLES)[number])
+      !USER_ROLES.includes(
+        body.role as (typeof USER_ROLES)[number],
+      )
     ) {
       return null;
     }
@@ -112,7 +176,9 @@ function parseUserPatch(value: unknown): Partial<User> | null {
   if ('status' in body) {
     if (
       typeof body.status !== 'string' ||
-      !USER_STATUSES.includes(body.status as (typeof USER_STATUSES)[number])
+      !USER_STATUSES.includes(
+        body.status as (typeof USER_STATUSES)[number],
+      )
     ) {
       return null;
     }
@@ -120,10 +186,21 @@ function parseUserPatch(value: unknown): Partial<User> | null {
     patch.status = body.status as NonNullable<User['status']>;
   }
 
+  if ('avatarUrl' in body) {
+    if (!isValidAvatarValue(body.avatarUrl)) {
+      return null;
+    }
+
+    patch.avatarUrl = body.avatarUrl;
+  }
+
   return patch;
 }
 
-async function updateUser(request: NextRequest, context: RouteContext) {
+async function updateUser(
+  request: NextRequest,
+  context: RouteContext,
+) {
   let roleAssignmentUpdated = false;
   let previousRole: User['role'] | undefined;
 
@@ -156,9 +233,13 @@ async function updateUser(request: NextRequest, context: RouteContext) {
 
     const requiredPermissions: string[] = [];
 
-    const hasProfileFields = ['firstName', 'lastName', 'email', 'age'].some(
-      (field) => field in patch,
-    );
+    const hasProfileFields = [
+      'firstName',
+      'lastName',
+      'email',
+      'age',
+      'avatarUrl',
+    ].some((field) => field in patch);
 
     if (hasProfileFields || 'status' in patch) {
       requiredPermissions.push('users.edit');
@@ -183,26 +264,34 @@ async function updateUser(request: NextRequest, context: RouteContext) {
       );
 
       if (!duplicateResponse.ok) {
-        return errorResponse('Failed to validate user email', 502);
+        return errorResponse(
+          'Failed to validate user email',
+          502,
+        );
       }
 
       const users = (await duplicateResponse.json()) as User[];
 
-      const emailExists = users.some((user) => user.id !== userId);
+      const emailExists = users.some(
+        (user) => user.id !== userId,
+      );
 
       if (emailExists) {
         return errorResponse('Email already exists', 409);
       }
     }
 
-    // Synchronize the new role assignment before updating the legacy field.
     if (patch.role) {
-      const currentUserResponse = await fetchMockApi(`/users/${userId}`);
+      const currentUserResponse = await fetchMockApi(
+        `/users/${userId}`,
+      );
 
       if (!currentUserResponse.ok) {
         return errorResponse(
           'User not found',
-          currentUserResponse.status === 404 ? 404 : currentUserResponse.status,
+          currentUserResponse.status === 404
+            ? 404
+            : currentUserResponse.status,
         );
       }
 
@@ -215,10 +304,13 @@ async function updateUser(request: NextRequest, context: RouteContext) {
       roleAssignmentUpdated = true;
     }
 
-    const response = await fetchMockApi(`/users/${userId}`, {
-      method: 'PATCH',
-      body: JSON.stringify(patch),
-    });
+    const response = await fetchMockApi(
+      `/users/${userId}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(patch),
+      },
+    );
 
     if (!response.ok) {
       if (roleAssignmentUpdated && previousRole) {
@@ -227,12 +319,13 @@ async function updateUser(request: NextRequest, context: RouteContext) {
       }
 
       return errorResponse(
-        response.status === 404 ? 'User not found' : 'Failed to update user',
+        response.status === 404
+          ? 'User not found'
+          : 'Failed to update user',
         response.status,
       );
     }
 
-    // Both representations have now been updated successfully.
     roleAssignmentUpdated = false;
 
     const updatedUser = (await response.json()) as User;
@@ -247,7 +340,7 @@ async function updateUser(request: NextRequest, context: RouteContext) {
           await syncLegacyUserRole(userId, previousRole);
         }
       } catch {
-        // Keep the failure closed; do not grant permissions from the legacy role.
+        // Do not grant permissions from the legacy role on rollback failure.
       }
     }
 
@@ -255,8 +348,14 @@ async function updateUser(request: NextRequest, context: RouteContext) {
   }
 }
 
-export async function GET(request: NextRequest, context: RouteContext) {
-  const authorization = await authorizeApiRequest(request, ['users.view']);
+export async function GET(
+  request: NextRequest,
+  context: RouteContext,
+) {
+  const authorization = await authorizeApiRequest(
+    request,
+    ['users.view'],
+  );
 
   if (!authorization.authorized) {
     return authorization.response;
@@ -279,24 +378,49 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     const user = (await response.json()) as User;
+    const roles = await getUserRoles(userId);
 
-    return successResponse(user);
+    if (!roles) {
+      return errorResponse(
+        'Failed to retrieve user roles',
+        503,
+      );
+    }
+
+    return successResponse({
+      ...user,
+      roles,
+    });
   } catch {
-    return errorResponse('Users service is unavailable', 503);
+    return errorResponse(
+      'Users service is unavailable',
+      503,
+    );
   }
 }
 
-export async function PATCH(request: NextRequest, context: RouteContext) {
+export async function PATCH(
+  request: NextRequest,
+  context: RouteContext,
+) {
   return updateUser(request, context);
 }
 
-// Keep compatibility with the existing frontend until all mutations use PATCH.
-export async function PUT(request: NextRequest, context: RouteContext) {
+export async function PUT(
+  request: NextRequest,
+  context: RouteContext,
+) {
   return updateUser(request, context);
 }
 
-export async function DELETE(request: NextRequest, context: RouteContext) {
-  const authorization = await authorizeApiRequest(request, ['users.delete']);
+export async function DELETE(
+  request: NextRequest,
+  context: RouteContext,
+) {
+  const authorization = await authorizeApiRequest(
+    request,
+    ['users.delete'],
+  );
 
   if (!authorization.authorized) {
     return authorization.response;
@@ -309,13 +433,18 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       return errorResponse('Invalid user id', 400);
     }
 
-    const response = await fetchMockApi(`/users/${userId}`, {
-      method: 'DELETE',
-    });
+    const response = await fetchMockApi(
+      `/users/${userId}`,
+      {
+        method: 'DELETE',
+      },
+    );
 
     if (!response.ok) {
       return errorResponse(
-        response.status === 404 ? 'User not found' : 'Failed to delete user',
+        response.status === 404
+          ? 'User not found'
+          : 'Failed to delete user',
         response.status,
       );
     }
@@ -324,6 +453,9 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
     return successResponse(deletedUser);
   } catch {
-    return errorResponse('Users service is unavailable', 503);
+    return errorResponse(
+      'Users service is unavailable',
+      503,
+    );
   }
 }

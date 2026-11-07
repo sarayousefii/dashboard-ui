@@ -170,7 +170,8 @@
       "delete": "Delete",
       "deleteTitle": "Delete User",
       "deleteDescription": "Are you sure you want to delete {name}?",
-      "confirmDelete": "Delete"
+      "confirmDelete": "Delete",
+      "manageRoles": "Manage Roles"
     },
     "pagination": {
       "previous": "Previous",
@@ -189,6 +190,47 @@
     },
     "notifications": {
       "created": "User created successfully"
+    },
+    "rolesManagement": {
+      "title": "Manage User Roles",
+      "description": "Manage assigned roles for {name}.",
+      "loading": "Loading roles...",
+      "loadFailed": "Failed to load role information.",
+      "retry": "Try again",
+      "currentRoles": "Assigned Roles",
+      "noRoles": "No roles are assigned to this user.",
+      "assignRole": "Assign Roles",
+      "assignDescription": "Select one or more roles to assign to this user.",
+      "selectRole": "Select roles",
+      "noAvailableRoles": "All available roles are already assigned.",
+      "assign": "Assign",
+      "assigning": "Assigning...",
+      "assignSelected": "Assign selected ({count})",
+      "cancel": "Close",
+      "revoke": "Revoke",
+      "revokeRole": "Revoke {role}",
+      "revokeTitle": "Revoke Role",
+      "revokeDescription": "Are you sure you want to revoke {role} from {name}?",
+      "confirmRevoke": "Revoke Role",
+      "assigned": "Role assigned successfully.",
+      "assignedMultiple": "{count} roles assigned successfully.",
+      "revoked": "Role revoked successfully.",
+      "assignFailed": "Failed to assign role.",
+      "assignPartialFailed": "{count} roles could not be assigned. Please review your selection and try again.",
+      "revokeFailed": "Failed to revoke role.",
+      "revokeSelected": "Revoke selected ({count})",
+      "selectedCount": "{count} selected",
+      "selectRolesToRevoke": "Select assigned roles to revoke",
+      "revokeMultipleTitle": "Revoke selected roles",
+      "revokeMultipleDescription": "Are you sure you want to revoke {count} selected roles from {name}?",
+      "confirmRevokeSelected": "Revoke selected roles",
+      "revokedMultiple": "{count} roles revoked successfully.",
+      "revokePartialFailed": "{count} roles could not be revoked. Please review your selection and try again.",
+      "roleDescriptions": {
+        "admin": "Full access to all application features.",
+        "editor": "Can view users and manage products.",
+        "viewer": "Read-only access to products and dashboard."
+      }
     }
   },
   "dashboard": {
@@ -227,6 +269,18 @@
       "editTitle": "Edit Profile",
       "manageDescription": "Update your personal profile information.",
       "update": "Save Changes"
+    },
+    "avatar": {
+      "title": "Profile photo",
+      "description": "Choose a photo to personalize this profile.",
+      "requirements": "JPG, PNG or WebP · Maximum 5 MB. The image is optimized before saving.",
+      "choose": "Choose photo",
+      "change": "Change photo",
+      "remove": "Remove photo",
+      "invalidFormat": "Please choose a JPG, PNG or WebP image.",
+      "fileTooLarge": "The selected image must be 5 MB or smaller.",
+      "imageTooLarge": "The image is still too large after compression. Try another image.",
+      "processingFailed": "Unable to process the selected image. Please try again."
     }
   }
 }

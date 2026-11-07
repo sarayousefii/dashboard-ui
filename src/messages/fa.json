@@ -170,7 +170,8 @@
       "delete": "حذف",
       "deleteTitle": "حذف کاربر",
       "deleteDescription": "آیا از حذف کاربر {name} اطمینان دارید؟",
-      "confirmDelete": "حذف"
+      "confirmDelete": "حذف",
+      "manageRoles": "مدیریت نقش‌ها"
     },
     "pagination": {
       "previous": "قبلی",
@@ -189,6 +190,47 @@
     },
     "notifications": {
       "created": "کاربر با موفقیت ایجاد شد"
+    },
+   "rolesManagement": {
+      "title": "مدیریت نقش‌های کاربر",
+      "description": "مدیریت نقش‌های اختصاص‌یافته به {name}.",
+      "loading": "در حال دریافت نقش‌ها...",
+      "loadFailed": "دریافت اطلاعات نقش‌ها با خطا مواجه شد.",
+      "retry": "تلاش مجدد",
+      "currentRoles": "نقش‌های اختصاص‌یافته",
+      "noRoles": "هیچ نقشی به این کاربر اختصاص داده نشده است.",
+      "assignRole": "اختصاص نقش‌ها",
+      "assignDescription": "یک یا چند نقش را برای اختصاص به این کاربر انتخاب کنید.",
+      "selectRole": "انتخاب نقش‌ها",
+      "noAvailableRoles": "تمام نقش‌های موجود قبلاً به این کاربر اختصاص داده شده‌اند.",
+      "assign": "اختصاص نقش",
+      "assigning": "در حال اختصاص...",
+      "assignSelected": "اختصاص نقش‌های انتخاب‌شده ({count})",
+      "cancel": "بستن",
+      "revoke": "لغو نقش",
+      "revokeRole": "لغو نقش {role}",
+      "revokeTitle": "لغو نقش کاربر",
+      "revokeDescription": "آیا از لغو نقش {role} از کاربر {name} اطمینان دارید؟",
+      "confirmRevoke": "تأیید لغو نقش",
+      "assigned": "نقش با موفقیت اختصاص داده شد.",
+      "assignedMultiple": "{count} نقش با موفقیت اختصاص داده شد.",
+      "revoked": "نقش با موفقیت لغو شد.",
+      "assignFailed": "اختصاص نقش با خطا مواجه شد.",
+      "assignPartialFailed": "اختصاص {count} نقش ناموفق بود. لطفاً انتخاب‌ها را بررسی و دوباره تلاش کنید.",
+      "revokeFailed": "لغو نقش با خطا مواجه شد.",
+      "revokeSelected": "لغو موارد انتخاب‌شده ({count})",
+      "selectedCount": "{count} مورد انتخاب شده",
+      "selectRolesToRevoke": "نقش‌های موردنظر برای لغو را انتخاب کنید",
+      "revokeMultipleTitle": "لغو نقش‌های انتخاب‌شده",
+      "revokeMultipleDescription": "آیا از لغو {count} نقش انتخاب‌شده از کاربر {name} اطمینان دارید؟",
+      "confirmRevokeSelected": "لغو نقش‌های انتخاب‌شده",
+      "revokedMultiple": "{count} نقش با موفقیت لغو شد.",
+      "revokePartialFailed": "{count} نقش لغو نشد. انتخاب‌ها را بررسی و دوباره تلاش کنید.",
+      "roleDescriptions": {
+        "admin": "دسترسی کامل به تمام قابلیت‌های برنامه.",
+        "editor": "امکان مشاهده کاربران و مدیریت محصولات.",
+        "viewer": "دسترسی فقط‌خواندنی به محصولات و داشبورد."
+      }
     }
   },
   "dashboard": {
@@ -227,6 +269,18 @@
       "editTitle": "ویرایش پروفایل",
       "manageDescription": "اطلاعات پروفایل خود را ویرایش کنید.",
       "update": "ذخیره تغییرات"
+    },
+    "avatar": {
+      "title": "تصویر پروفایل",
+      "description": "برای شخصی‌سازی این پروفایل یک تصویر انتخاب کنید.",
+      "requirements": "فرمت JPG، PNG یا WebP · حداکثر ۵ مگابایت. تصویر پیش از ذخیره بهینه می‌شود.",
+      "choose": "انتخاب تصویر",
+      "change": "تغییر تصویر",
+      "remove": "حذف تصویر",
+      "invalidFormat": "لطفاً یک تصویر با فرمت JPG، PNG یا WebP انتخاب کنید.",
+      "fileTooLarge": "حجم تصویر انتخاب‌شده نباید بیشتر از ۵ مگابایت باشد.",
+      "imageTooLarge": "حجم تصویر پس از فشرده‌سازی همچنان زیاد است. تصویر دیگری انتخاب کنید.",
+      "processingFailed": "پردازش تصویر انجام نشد. لطفاً دوباره تلاش کنید."
     }
   }
 }
